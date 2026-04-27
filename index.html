@@ -511,7 +511,8 @@ const LOGO = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAABsCAIAAAAuQeEI
 // ============================================================
 // STATE
 // ============================================================
-let state = { players: [], events: [], draws: [], playoffs: [] };
+const DATA_VERSION = 2; // Bump this to force re-seed from backup
+let state = { players: [], events: [], draws: [], playoffs: [], dataVersion: 0 };
 
 function loadState() {
   try {
@@ -520,10 +521,12 @@ function loadState() {
       state = JSON.parse(saved);
       if (!state.draws) state.draws = [];
       if (!state.playoffs) state.playoffs = [];
-      return;
+      // If data version is current, keep existing data
+      if (state.dataVersion >= DATA_VERSION) return;
+      // Otherwise re-seed from backup (version upgrade)
     }
   } catch(e) {}
-  // First run — seed from backup data (preserves IDs and extra fields)
+  // Seed from backup data (preserves IDs and extra fields)
   state.players = SEED_PLAYERS.map(p => ({
     id: p.id,
     name: p.name,
@@ -534,6 +537,7 @@ function loadState() {
   state.events = (typeof SEED_EVENTS !== 'undefined' && SEED_EVENTS) ? SEED_EVENTS : [];
   state.draws = [];
   state.playoffs = [];
+  state.dataVersion = DATA_VERSION;
   saveState();
 }
 
