@@ -279,11 +279,12 @@ td.club-col{width:150px}
   <div class="entries-wrap" id="ed-entries"></div>
   <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
     <button class="btn-primary" onclick="openAddPlayers()">&#43; Add / Edit Players</button>
-    <button class="btn-primary" onclick="openDrawForEvent()">&#127922; Create Draw</button>
+    <button class="btn-primary" id="ed-draw-btn" onclick="openDrawForEvent()">&#127922; Create Draw</button>
     <button class="btn-primary" onclick="openCreatePlayoff()">&#127942; Create Playoff</button>
     <button class="btn-secondary" onclick="openEditEvent()">&#9998; Edit Event</button>
     <button class="btn-danger" onclick="deleteCurrentEvent()">Delete Event</button>
   </div>
+  <div id="ed-draw-card" style="margin-top:18px"></div>
   <div id="ed-playoffs" style="margin-top:18px"></div>
 </div>
 
@@ -650,6 +651,7 @@ function renderEventDetail(q) {
   if (!players.length) {
     document.getElementById('ed-entries').innerHTML =
       `<div style="padding:24px;text-align:center;color:var(--text-mid)">${lq?'No players match your search':'No players added yet — click "+ Add / Edit Players"'}</div>`;
+    renderEventDraws();
     renderEventPlayoffs();
     return;
   }
@@ -666,7 +668,8 @@ function renderEventDetail(q) {
   document.getElementById('ed-entries').innerHTML =
     `<table><thead><tr><th style="width:40px">#</th><th>Player</th><th>Club</th><th style="width:44px"></th></tr></thead><tbody>${rows}</tbody></table>`;
 
-  // Render playoffs for this event
+  // Render draw and playoffs for this event
+  renderEventDraws();
   renderEventPlayoffs();
 }
 
@@ -951,11 +954,18 @@ function openPlayerInfo(pid) {
       }).join('')
     : '<div style="color:var(--text-mid);font-size:.85rem">No playoffs yet</div>';
 
-  // Venues (including playoff match venues)
-  const venues = evs.map(e => e.venue).filter(Boolean);
+  // Venues from draw sections and playoff matches
   const vCounts = {};
-  venues.forEach(v => vCounts[v] = (vCounts[v]||0)+1);
-  // Add playoff match venues
+  // Draw section venues
+  state.draws.forEach(draw => {
+    draw.sections.forEach(section => {
+      if (!section.venue) return;
+      if (section.players.includes(pid)) {
+        vCounts[section.venue] = (vCounts[section.venue]||0)+1;
+      }
+    });
+  });
+  // Playoff match venues
   playerPlayoffs.forEach(po => {
     po.bracket.forEach(m => {
       if (m.venue && (m.p1 === pid || m.p2 === pid)) {
@@ -1015,14 +1025,17 @@ function renderDashboard() {
     ).join('');
 
   const pvMap = {};
-  state.events.forEach(ev => {
-    if (!ev.venue) return;
-    ev.entries.forEach(pid => {
-      if (!pvMap[pid]) pvMap[pid] = {};
-      pvMap[pid][ev.venue] = (pvMap[pid][ev.venue]||0)+1;
+  // Track venues from draw sections (player assigned to section with a venue)
+  state.draws.forEach(draw => {
+    draw.sections.forEach(section => {
+      if (!section.venue) return;
+      section.players.forEach(pid => {
+        if (!pvMap[pid]) pvMap[pid] = {};
+        pvMap[pid][section.venue] = (pvMap[pid][section.venue]||0)+1;
+      });
     });
   });
-  // Include playoff match venues
+  // Track venues from playoff matches
   state.playoffs.forEach(po => {
     po.bracket.forEach(m => {
       if (!m.venue) return;
@@ -1098,18 +1111,51 @@ let currentDrawEventId = null;
 let drawDraggedPlayer = null;
 
 function openDrawForEvent() {
+  const existing = state.draws.find(d => d.eventId === currentEventId);
+  if (!existing) {
+    // Create new draw
+    const draw = { eventId: currentEventId, sections: [], rankings: {} };
+    state.draws.push(draw);
+    saveState();
+  }
   currentDrawEventId = currentEventId;
   showPage('draws', null);
   document.getElementById('draw-event-picker').value = currentEventId;
   renderDrawContent();
 }
 
+function renderEventDraws() {
+  const container = document.getElementById('ed-draw-card');
+  const btn = document.getElementById('ed-draw-btn');
+  if (!container) return;
+  const draw = state.draws.find(d => d.eventId === currentEventId);
+
+  if (draw) {
+    btn.textContent = '\u{1F3B2} Edit Draw';
+    const nSections = draw.sections.length;
+    const totalAssigned = draw.sections.reduce((s, sec) => s + sec.players.length, 0);
+    const venues = draw.sections.map(s => s.venue).filter(Boolean);
+    container.innerHTML = `<div class="detail-section-title">Draw</div>
+      <div class="playoff-list"><div class="playoff-card" onclick="openDrawForEvent()">
+        <div class="playoff-card-head">
+          <div class="playoff-card-title">${nSections} Section${nSections!==1?'s':''}</div>
+          <div class="playoff-card-sub">${totalAssigned} players assigned${venues.length ? ' \u00b7 ' + venues.join(', ') : ''}</div>
+        </div>
+        <div class="playoff-card-body">Click to view or edit the draw</div>
+      </div></div>`;
+  } else {
+    btn.textContent = '\u{1F3B2} Create Draw';
+    container.innerHTML = '';
+  }
+}
+
 function renderDrawsPage() {
   const sel = document.getElementById('draw-event-picker');
   sel.innerHTML = '<option value="">Choose an event...</option>' +
-    state.events.filter(e => e.entries.length > 0).map(ev =>
-      `<option value="${ev.id}" ${ev.id===currentDrawEventId?'selected':''}>${ev.name} (${ev.entries.length} players)</option>`
-    ).join('');
+    state.events.filter(e => e.entries.length > 0).map(ev => {
+      const hasDraw = state.draws.some(d => d.eventId === ev.id);
+      return `<option value="${ev.id}" ${ev.id===currentDrawEventId?'selected':''}>${ev.name} (${ev.entries.length} players)${hasDraw?' \u2713':''}</option>`;
+    }).join('');
   renderDrawContent();
 }
 
@@ -1118,15 +1164,9 @@ function onDrawEventChange() {
   renderDrawContent();
 }
 
-function getOrCreateDraw(eventId) {
+function getDraw(eventId) {
   if (!eventId) return null;
-  let draw = state.draws.find(d => d.eventId === eventId);
-  if (!draw) {
-    draw = { eventId, sections: [], rankings: {} };
-    state.draws.push(draw);
-    saveState();
-  }
-  return draw;
+  return state.draws.find(d => d.eventId === eventId) || null;
 }
 
 function renderDrawContent() {
@@ -1139,7 +1179,11 @@ function renderDrawContent() {
   const ev = state.events.find(e => e.id === currentDrawEventId);
   if (!ev) { container.innerHTML = ''; return; }
 
-  const draw = getOrCreateDraw(currentDrawEventId);
+  const draw = getDraw(currentDrawEventId);
+  if (!draw) {
+    container.innerHTML = '<div class="empty-state"><div class="ico">&#127922;</div><p>No draw created yet for this event</p><small>Go to the event and click "Create Draw"</small></div>';
+    return;
+  }
   const players = ev.entries.map(pid => state.players.find(p => p.id === pid)).filter(Boolean);
 
   // Find unassigned players
@@ -1249,7 +1293,7 @@ function renderDrawContent() {
 }
 
 function setRanking(pid, value) {
-  const draw = getOrCreateDraw(currentDrawEventId);
+  const draw = getDraw(currentDrawEventId);
   if (!draw) return;
   const v = parseInt(value);
   if (v > 0) draw.rankings[pid] = v;
@@ -1258,7 +1302,7 @@ function setRanking(pid, value) {
 }
 
 function setSectionCount() {
-  const draw = getOrCreateDraw(currentDrawEventId);
+  const draw = getDraw(currentDrawEventId);
   if (!draw) return;
   const count = parseInt(document.getElementById('draw-section-count').value) || 0;
   if (count < 1) { alert('Please enter at least 1 section.'); return; }
@@ -1276,7 +1320,7 @@ function setSectionCount() {
 }
 
 function clearAllSections() {
-  const draw = getOrCreateDraw(currentDrawEventId);
+  const draw = getDraw(currentDrawEventId);
   if (!draw) return;
   if (!confirm('Clear all section assignments?')) return;
   draw.sections.forEach(s => { s.players = []; });
@@ -1285,7 +1329,7 @@ function clearAllSections() {
 }
 
 function autoAssignPlayers() {
-  const draw = getOrCreateDraw(currentDrawEventId);
+  const draw = getDraw(currentDrawEventId);
   if (!draw || !draw.sections.length) {
     alert('Please set up sections first.');
     return;
@@ -1322,14 +1366,14 @@ function autoAssignPlayers() {
 }
 
 function setSectionVenue(sectionIdx, venue) {
-  const draw = getOrCreateDraw(currentDrawEventId);
+  const draw = getDraw(currentDrawEventId);
   if (!draw) return;
   draw.sections[sectionIdx].venue = venue;
   saveState();
 }
 
 function removeFromSection(sectionIdx, pid) {
-  const draw = getOrCreateDraw(currentDrawEventId);
+  const draw = getDraw(currentDrawEventId);
   if (!draw) return;
   draw.sections[sectionIdx].players = draw.sections[sectionIdx].players.filter(id => id !== pid);
   saveState();
@@ -1363,7 +1407,7 @@ function handleDropSection(e, sectionIdx) {
   const pid = drawDraggedPlayer;
   if (!pid) return;
 
-  const draw = getOrCreateDraw(currentDrawEventId);
+  const draw = getDraw(currentDrawEventId);
   if (!draw) return;
 
   // Remove from all sections first
@@ -1384,7 +1428,7 @@ function handleDropUnassigned(e) {
   const pid = drawDraggedPlayer;
   if (!pid) return;
 
-  const draw = getOrCreateDraw(currentDrawEventId);
+  const draw = getDraw(currentDrawEventId);
   if (!draw) return;
 
   // Remove from all sections
