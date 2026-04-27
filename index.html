@@ -1,15 +1,1274 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>West Coast Rolbal | Bowls 2026/27</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
-    <script type="module" crossorigin src="/assets/index-qAOrR8Kx.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-Blt2_rve.css">
-  </head>
-  <body class="bg-navy-50">
-    <div id="root"></div>
-  </body>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>West Coast Rolbal | Bowls 2026/27</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#002840; --navy-mid:#004060; --navy-light:#1a6a8a;
+  --cream:#eef3f7; --tan:#cde0ee; --orange:#e69444; --orange-light:#f0b060;
+  --white:#f4f9fd; --text:#071a28; --text-mid:#1a4a68; --border:#7aafc8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Source Sans 3",sans-serif;background:var(--cream);color:var(--text);min-height:100vh}
+
+/* HEADER */
+header{background:var(--navy);position:sticky;top:0;z-index:100;box-shadow:0 2px 14px rgba(0,0,0,.35)}
+.header-inner{max-width:1100px;margin:0 auto;padding:10px 24px;display:flex;align-items:center;gap:14px}
+.header-logo{width:52px;height:auto;border-radius:6px;background:white;padding:2px;flex-shrink:0}
+.header-titles h1{font-family:"Playfair Display",serif;color:var(--orange-light);font-size:1.3rem;font-weight:700;line-height:1.1}
+.header-titles p{color:rgba(255,255,255,.55);font-size:.75rem;font-weight:300;letter-spacing:.05em;margin-top:1px}
+.header-nav{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.nav-tab{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;color:rgba(255,255,255,.75);cursor:pointer;font-family:"Source Sans 3",sans-serif;font-size:.78rem;padding:6px 14px;transition:all .15s}
+.nav-tab:hover{background:rgba(255,255,255,.18);color:white}
+.nav-tab.active{background:var(--orange);border-color:var(--orange);color:var(--navy);font-weight:700}
+
+/* PAGE SHELL */
+.page{display:none;max-width:1100px;margin:0 auto;padding:20px 24px;animation:fadeIn .18s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* SHARED */
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.page-title{font-family:"Playfair Display",serif;font-size:1.4rem;font-weight:700;color:var(--navy)}
+.btn-primary{background:var(--navy);border:none;border-radius:8px;color:white;cursor:pointer;font-family:"Source Sans 3",sans-serif;font-size:.85rem;font-weight:600;padding:9px 18px;transition:background .15s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary:hover{background:var(--navy-mid)}
+.btn-secondary{background:none;border:1px solid var(--border);border-radius:8px;color:var(--text-mid);cursor:pointer;font-family:"Source Sans 3",sans-serif;font-size:.85rem;padding:8px 16px;transition:all .15s}
+.btn-secondary:hover{background:var(--tan)}
+.btn-danger{background:none;border:none;color:#b03030;cursor:pointer;font-family:"Source Sans 3",sans-serif;font-size:.8rem;text-decoration:underline;padding:0}
+.btn-danger:hover{opacity:.75}
+.search-bar{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:9px 14px;display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.search-bar input{background:none;border:none;color:var(--text);font-family:"Source Sans 3",sans-serif;font-size:.875rem;outline:none;flex:1}
+.search-bar input::placeholder{color:var(--text-mid);opacity:.55}
+.empty-state{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:48px;text-align:center;color:var(--text-mid)}
+.empty-state .ico{font-size:2.5rem;margin-bottom:12px}
+.empty-state p{font-size:1rem;margin-bottom:6px}
+.empty-state small{font-size:.82rem;opacity:.7}
+mark{background:rgba(230,148,68,.35);border-radius:2px;color:inherit;padding:0 1px}
+
+/* EVENTS GRID */
+.events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.event-tile{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .15s;display:flex;flex-direction:column}
+.event-tile:hover{border-color:var(--navy-light);box-shadow:0 4px 16px rgba(0,64,96,.14);transform:translateY(-2px)}
+.tile-head{background:linear-gradient(135deg,var(--navy),var(--navy-mid));padding:14px 16px}
+.tile-title{color:white;font-family:"Playfair Display",serif;font-size:.98rem;font-weight:600;line-height:1.2}
+.tile-badges{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+.tile-badge{background:rgba(255,255,255,.15);border-radius:10px;color:rgba(255,255,255,.85);font-size:.68rem;padding:2px 8px}
+.tile-badge.orange{background:var(--orange);color:var(--navy);font-weight:700}
+.tile-body{padding:12px 16px;flex:1}
+.tile-info-row{display:flex;align-items:flex-start;gap:7px;font-size:.78rem;color:var(--text-mid);margin-bottom:5px}
+.tile-info-row:last-child{margin-bottom:0}
+.tile-info-row .ico{opacity:.6;flex-shrink:0;margin-top:1px}
+.tile-foot{border-top:1px solid var(--border);padding:9px 16px;display:flex;align-items:center;justify-content:space-between}
+.tile-count{color:var(--text-mid);font-size:.75rem}
+.tile-count strong{color:var(--navy);font-size:.92rem;font-family:"Playfair Display",serif}
+.tile-arrow{color:var(--orange);font-size:.88rem}
+
+/* EVENT DETAIL */
+.event-detail-header{background:linear-gradient(135deg,var(--navy),var(--navy-mid));border-radius:12px;padding:20px 22px;margin-bottom:18px}
+.back-btn{background:rgba(255,255,255,.14);border:none;border-radius:20px;color:rgba(255,255,255,.8);cursor:pointer;font-family:"Source Sans 3",sans-serif;font-size:.78rem;padding:5px 12px;margin-bottom:12px;display:inline-flex;align-items:center;gap:5px;transition:background .15s}
+.back-btn:hover{background:rgba(255,255,255,.24)}
+.ed-title{color:white;font-family:"Playfair Display",serif;font-size:1.5rem;font-weight:700}
+.ed-meta{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px}
+.ed-meta-item{display:flex;align-items:center;gap:5px;color:rgba(255,255,255,.75);font-size:.8rem}
+.detail-section-title{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--navy);margin-bottom:10px}
+.entries-wrap{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px}
+table{width:100%;border-collapse:collapse;font-size:.865rem}
+thead th{background:#daeaf4;border-bottom:2px solid var(--border);color:var(--navy);font-size:.68rem;font-weight:700;letter-spacing:.07em;padding:8px 14px;text-align:left;text-transform:uppercase}
+tbody tr{border-bottom:1px solid rgba(0,0,0,.05);transition:background .1s}
+tbody tr:last-child{border-bottom:none}
+tbody td{padding:9px 14px;vertical-align:middle}
+td.no-col{color:var(--orange);font-weight:700;font-size:.78rem;width:40px;text-align:center}
+td.club-col{width:150px}
+.club-pill{background:var(--cream);border:1px solid var(--border);border-radius:20px;color:var(--navy);display:inline-block;font-size:.7rem;font-weight:600;padding:2px 9px}
+.del-row{background:none;border:none;color:#c0392b;cursor:pointer;font-size:.9rem;opacity:.45}
+.del-row:hover{opacity:1}
+
+/* PLAYERS */
+.club-filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.club-chip{background:var(--white);border:1px solid var(--border);border-radius:16px;color:var(--text-mid);cursor:pointer;font-family:"Source Sans 3",sans-serif;font-size:.75rem;padding:4px 12px;transition:all .15s}
+.club-chip:hover{background:var(--tan)}
+.club-chip.active{background:var(--navy);border-color:var(--navy);color:white;font-weight:600}
+.players-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}
+.player-card{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:10px 13px;transition:all .15s;cursor:pointer}
+.player-card:hover{border-color:var(--navy-light);background:var(--tan)}
+.player-name{font-weight:600;font-size:.875rem;color:var(--text)}
+.player-club{color:var(--text-mid);font-size:.72rem;margin-top:2px}
+.player-events{color:var(--navy-light);font-size:.7rem;margin-top:3px;font-weight:600}
+
+/* DASHBOARD */
+.summary-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.sum-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.sum-num{font-family:"Playfair Display",serif;font-size:2rem;font-weight:700;color:var(--navy);line-height:1}
+.sum-label{color:var(--text-mid);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;margin-top:3px}
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.dash-card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.dash-card-head{background:var(--navy);padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
+.dash-card-head .dname{color:white;font-weight:600;font-size:.88rem}
+.dash-club-tag{background:rgba(255,255,255,.18);border-radius:10px;color:rgba(255,255,255,.8);font-size:.66rem;padding:2px 7px}
+.dash-card-body{padding:12px 14px}
+.venue-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.venue-row:last-child{margin-bottom:0}
+.venue-name{font-size:.78rem;font-weight:600;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px}
+.venue-bar-wrap{flex:1;background:var(--cream);border-radius:4px;height:8px;overflow:hidden}
+.venue-bar{background:var(--navy-mid);height:100%;border-radius:4px;transition:width .3s}
+.venue-bar.warn{background:#c0392b}
+.venue-count{font-size:.72rem;color:var(--text-mid);width:20px;text-align:right;flex-shrink:0}
+.dash-warning{background:#fff3f3;border:1px solid #f5c6c6;border-radius:6px;color:#8b1a1a;font-size:.74rem;padding:5px 9px;margin-top:8px;display:flex;align-items:center;gap:5px}
+
+/* DRAWS */
+.draw-setup{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:18px}
+.draw-setup-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.draw-setup-row:last-child{margin-bottom:0}
+.draw-sections-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:18px}
+.draw-section{background:var(--white);border:2px solid var(--border);border-radius:12px;overflow:hidden;min-height:200px;transition:border-color .15s}
+.draw-section.drag-over{border-color:var(--orange);background:rgba(230,148,68,.06)}
+.draw-section-head{background:linear-gradient(135deg,var(--navy),var(--navy-mid));padding:12px 14px;display:flex;align-items:center;justify-content:space-between}
+.draw-section-title{color:white;font-family:"Playfair Display",serif;font-size:.92rem;font-weight:600}
+.draw-section-count{color:rgba(255,255,255,.7);font-size:.72rem}
+.draw-section-venue{padding:8px 14px;background:var(--cream);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.draw-section-venue select{flex:1;font-size:.78rem;padding:5px 8px}
+.draw-section-body{padding:10px;min-height:120px}
+.draw-player-chip{background:var(--cream);border:1px solid var(--border);border-radius:6px;padding:6px 10px;margin-bottom:4px;cursor:grab;display:flex;align-items:center;gap:8px;transition:all .12s;font-size:.82rem}
+.draw-player-chip:hover{background:var(--tan);border-color:var(--navy-light)}
+.draw-player-chip.dragging{opacity:.4;transform:scale(.95)}
+.draw-player-chip .rank-num{color:var(--orange);font-weight:700;font-size:.75rem;min-width:20px}
+.draw-player-chip .chip-name{font-weight:600;flex:1}
+.draw-player-chip .chip-club{color:var(--text-mid);font-size:.7rem}
+.draw-player-chip .chip-remove{color:#c0392b;cursor:pointer;font-size:.8rem;opacity:.5;border:none;background:none}
+.draw-player-chip .chip-remove:hover{opacity:1}
+.unassigned-pool{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:18px}
+.unassigned-pool-title{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--navy);margin-bottom:8px}
+.unassigned-pool-body{display:flex;flex-wrap:wrap;gap:6px;min-height:40px}
+.rank-input{width:42px;text-align:center;border:1px solid var(--border);border-radius:5px;padding:4px;font-size:.78rem;font-family:"Source Sans 3",sans-serif}
+.rank-input:focus{border-color:var(--navy-mid);outline:none}
+
+/* MODALS */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);border-radius:14px;box-shadow:0 24px 60px rgba(0,0,0,.28);max-width:560px;width:92%;overflow:hidden;animation:modalIn .18s ease;max-height:92vh;display:flex;flex-direction:column;position:relative}
+@keyframes modalIn{from{opacity:0;transform:translateY(-10px) scale(.97)}to{opacity:1;transform:none}}
+.modal-head{background:linear-gradient(135deg,var(--navy),var(--navy-mid));padding:16px 44px 16px 20px;flex-shrink:0}
+.modal-head-title{color:white;font-family:"Playfair Display",serif;font-size:1.1rem;font-weight:700}
+.modal-head-sub{color:rgba(255,255,255,.65);font-size:.78rem;margin-top:2px}
+.modal-close{position:absolute;right:14px;top:14px;background:rgba(255,255,255,.15);border:none;border-radius:50%;color:white;cursor:pointer;font-size:.9rem;width:28px;height:28px;line-height:28px;text-align:center;transition:background .15s;z-index:1}
+.modal-close:hover{background:rgba(255,255,255,.28)}
+.modal-scroll{overflow-y:auto;flex:1}
+.modal-body{padding:20px}
+.modal-foot{border-top:1px solid var(--border);padding:12px 20px;display:flex;justify-content:flex-end;align-items:center;gap:8px;flex-shrink:0}
+
+/* FORMS */
+.form-row{margin-bottom:14px}
+.form-row:last-child{margin-bottom:0}
+.form-label{color:var(--text-mid);font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;display:block}
+.form-input{background:var(--white);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:"Source Sans 3",sans-serif;font-size:.9rem;padding:9px 12px;width:100%;outline:none;transition:border-color .15s}
+.form-input:focus{border-color:var(--navy-mid)}
+.form-select{appearance:none;background:var(--white);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:"Source Sans 3",sans-serif;font-size:.9rem;padding:9px 32px 9px 12px;width:100%;outline:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231a4a68' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.form-select:focus{border-color:var(--navy-mid)}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+
+/* PLAYER PICKER */
+.picker-search{background:var(--cream);border:1px solid var(--border);border-radius:8px;padding:8px 12px;display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.picker-search input{background:none;border:none;color:var(--text);font-family:"Source Sans 3",sans-serif;font-size:.85rem;outline:none;flex:1}
+.picker-list{max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--white)}
+.picker-item{border-bottom:1px solid rgba(0,0,0,.05);cursor:pointer;display:flex;align-items:center;gap:10px;padding:8px 12px;transition:background .1s}
+.picker-item:last-child{border-bottom:none}
+.picker-item:hover{background:var(--cream)}
+.picker-item.selected{background:#daeaf4}
+.picker-check{color:var(--navy);font-size:.9rem;width:18px;flex-shrink:0;text-align:center}
+.picker-name{font-size:.85rem;font-weight:600;flex:1}
+.picker-club-tag{color:var(--text-mid);font-size:.7rem}
+.selected-count{color:var(--navy);font-size:.78rem;font-weight:600;margin-bottom:8px}
+
+/* PLAYER POPUP */
+.pp-event-row{background:var(--cream);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;padding:10px 13px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px}
+.pp-event-row:hover{border-color:var(--navy-light);background:var(--tan)}
+.pp-event-name{flex:1;font-weight:600;font-size:.875rem}
+.pp-event-sub{color:var(--text-mid);font-size:.73rem;margin-top:2px}
+
+@media(max-width:680px){
+  .summary-stats{grid-template-columns:repeat(2,1fr)}
+  .events-grid,.dash-grid,.draw-sections-grid{grid-template-columns:1fr}
+  .players-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+  .page{padding:12px 14px}
+  .form-row-2{grid-template-columns:1fr}
+  .header-titles h1{font-size:1rem}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <img id="header-logo" class="header-logo" alt="West Coast Bowls">
+    <div class="header-titles">
+      <h1>West Coast Rolbal | Bowls</h1>
+      <p>2026 / 2027 Season</p>
+    </div>
+    <div class="header-nav">
+      <button class="nav-tab active" onclick="showPage('dashboard',this)">Dashboard</button>
+      <button class="nav-tab" onclick="showPage('events',this)">Events</button>
+      <button class="nav-tab" onclick="showPage('draws',this)">Draws</button>
+      <button class="nav-tab" onclick="showPage('players',this)">Players</button>
+    </div>
+  </div>
+</header>
+
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+  <div class="page-header">
+    <div class="page-title">&#127967; Venue Dashboard</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap" id="dash-filters"></div>
+  </div>
+  <div class="summary-stats" id="dash-summary"></div>
+  <div class="search-bar">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="var(--text-mid)" opacity=".5"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg>
+    <input type="text" id="dash-search" placeholder="Search player..." oninput="renderDashboard()">
+  </div>
+  <div class="dash-grid" id="dash-grid"></div>
+</div>
+
+<!-- EVENTS -->
+<div class="page" id="page-events">
+  <div class="page-header">
+    <div class="page-title">&#127941; Events 2026/27</div>
+    <button class="btn-primary" onclick="openAddEvent()">&#43; Add Event</button>
+  </div>
+  <div id="events-container"></div>
+</div>
+
+<!-- EVENT DETAIL -->
+<div class="page" id="page-event-detail">
+  <div class="event-detail-header">
+    <button class="back-btn" onclick="showPage('events',null)">&#8592; All Events</button>
+    <div class="ed-title" id="ed-title"></div>
+    <div class="ed-meta" id="ed-meta"></div>
+  </div>
+  <div class="search-bar">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="var(--text-mid)" opacity=".5"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg>
+    <input type="text" id="ed-search" placeholder="Search entries..." oninput="renderEventDetail(this.value)">
+  </div>
+  <div class="detail-section-title" id="ed-entry-count"></div>
+  <div class="entries-wrap" id="ed-entries"></div>
+  <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+    <button class="btn-primary" onclick="openAddPlayers()">&#43; Add / Edit Players</button>
+    <button class="btn-primary" onclick="openDrawForEvent()">&#127922; Create Draw</button>
+    <button class="btn-secondary" onclick="openEditEvent()">&#9998; Edit Event</button>
+    <button class="btn-danger" onclick="deleteCurrentEvent()">Delete Event</button>
+  </div>
+</div>
+
+<!-- DRAWS -->
+<div class="page" id="page-draws">
+  <div class="page-header">
+    <div class="page-title">&#127922; Draws</div>
+  </div>
+  <div id="draws-event-select" style="margin-bottom:18px">
+    <label class="form-label">Select Event</label>
+    <select class="form-select" id="draw-event-picker" onchange="onDrawEventChange()">
+      <option value="">Choose an event...</option>
+    </select>
+  </div>
+  <div id="draw-content"></div>
+</div>
+
+<!-- PLAYERS -->
+<div class="page" id="page-players">
+  <div class="page-header">
+    <div class="page-title">&#128101; Players</div>
+    <button class="btn-primary" onclick="openAddPlayer()">&#43; Add Player</button>
+  </div>
+  <div class="club-filter-row" id="club-filter-row"></div>
+  <div class="search-bar">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="var(--text-mid)" opacity=".5"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg>
+    <input type="text" id="player-search" placeholder="Search players..." oninput="renderPlayers()">
+  </div>
+  <div class="players-grid" id="players-grid"></div>
+</div>
+
+<!-- ADD/EDIT EVENT MODAL -->
+<div class="modal-overlay" id="modal-event" onclick="closeBg(event,'modal-event')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-event')">&#10005;</button>
+    <div class="modal-head">
+      <div class="modal-head-title" id="event-modal-title">Add Event</div>
+      <div class="modal-head-sub">2026 / 2027 Season</div>
+    </div>
+    <div class="modal-scroll">
+      <div class="modal-body">
+        <div class="form-row">
+          <label class="form-label">Event Name</label>
+          <input class="form-input" id="ev-name" placeholder="e.g. Open Singles Men">
+        </div>
+        <div class="form-row-2">
+          <div>
+            <label class="form-label">Format</label>
+            <select class="form-select" id="ev-format">
+              <option value="singles">Singles</option>
+              <option value="pairs">Pairs</option>
+              <option value="triples">Triples</option>
+              <option value="fours">Fours</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Date</label>
+            <input class="form-input" id="ev-date" type="date">
+          </div>
+        </div>
+        <div class="form-row-2">
+          <div>
+            <label class="form-label">Venue</label>
+            <input class="form-input" id="ev-venue" placeholder="e.g. Yzerfontein">
+          </div>
+          <div>
+            <label class="form-label">Closing Date</label>
+            <input class="form-input" id="ev-closing" type="date">
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Notes (optional)</label>
+          <input class="form-input" id="ev-notes" placeholder="Section venues, playoff info, etc.">
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-secondary" onclick="closeModal('modal-event')">Cancel</button>
+      <button class="btn-primary" onclick="saveEvent()">Save Event</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD PLAYERS TO EVENT MODAL -->
+<div class="modal-overlay" id="modal-players" onclick="closeBg(event,'modal-players')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-players')">&#10005;</button>
+    <div class="modal-head">
+      <div class="modal-head-title">Select Players</div>
+      <div class="modal-head-sub" id="add-players-sub"></div>
+    </div>
+    <div class="modal-scroll">
+      <div class="modal-body">
+        <div class="club-filter-row" id="picker-club-filter"></div>
+        <div class="picker-search">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="var(--text-mid)" opacity=".5"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg>
+          <input type="text" id="picker-search" placeholder="Search players..." oninput="renderPicker()">
+        </div>
+        <div class="selected-count" id="picker-count">0 selected</div>
+        <div class="picker-list" id="picker-list"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-secondary" onclick="closeModal('modal-players')">Cancel</button>
+      <button class="btn-primary" onclick="confirmAddPlayers()">Confirm Selection</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD/EDIT PLAYER MODAL -->
+<div class="modal-overlay" id="modal-add-player" onclick="closeBg(event,'modal-add-player')">
+  <div class="modal" style="max-width:400px">
+    <button class="modal-close" onclick="closeModal('modal-add-player')">&#10005;</button>
+    <div class="modal-head">
+      <div class="modal-head-title" id="player-modal-title">Add Player</div>
+    </div>
+    <div class="modal-scroll">
+      <div class="modal-body">
+        <div class="form-row">
+          <label class="form-label">Full Name</label>
+          <input class="form-input" id="new-player-name" placeholder="First Surname">
+        </div>
+        <div class="form-row">
+          <label class="form-label">Club</label>
+          <select class="form-select" id="new-player-club">
+            <option value="">Select club...</option>
+            <option value="CLANWILLIAM">CLANWILLIAM</option>
+            <option value="DARLING">DARLING</option>
+            <option value="LAGOON">LAGOON</option>
+            <option value="LANGEBAANWEG">LANGEBAANWEG</option>
+            <option value="MOORREESBURG">MOORREESBURG</option>
+            <option value="PORTERVILLE">PORTERVILLE</option>
+            <option value="SALDANHA">SALDANHA</option>
+            <option value="VELDDRIF">VELDDRIF</option>
+            <option value="VREDENDAL">VREDENDAL</option>
+            <option value="YZERFONTEIN">YZERFONTEIN</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-secondary" onclick="closeModal('modal-add-player')">Cancel</button>
+      <button class="btn-primary" onclick="saveNewPlayer()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- PLAYER INFO POPUP -->
+<div class="modal-overlay" id="modal-player-info" onclick="closeBg(event,'modal-player-info')">
+  <div class="modal" style="max-width:440px">
+    <button class="modal-close" onclick="closeModal('modal-player-info')">&#10005;</button>
+    <div class="modal-head">
+      <div class="modal-head-title" id="pp-name"></div>
+      <div class="modal-head-sub" id="pp-club"></div>
+    </div>
+    <div class="modal-scroll">
+      <div class="modal-body">
+        <div class="detail-section-title">Events this season</div>
+        <div id="pp-events" style="margin-bottom:16px"></div>
+        <div class="detail-section-title">Venues played</div>
+        <div id="pp-venues"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-danger" id="pp-delete-btn">Remove Player</button>
+      <button class="btn-secondary" onclick="openEditPlayerModal()">Edit</button>
+      <button class="btn-primary" onclick="closeModal('modal-player-info')">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// DATA INJECTED BY BUILD SCRIPT
+const CLUBS = ["CLANWILLIAM","DARLING","LAGOON","LANGEBAANWEG","MOORREESBURG","PORTERVILLE","SALDANHA","VELDDRIF","VREDENDAL","YZERFONTEIN"];
+const VENUES = ["Clanwilliam","Darling","Lagoon","Langebaanweg","Moorreesburg","Porterville","Saldanha","Velddrif","Vredendal","Yzerfontein"];
+const SEED_PLAYERS = [{"name": "A Singels", "club": "LANGEBAANWEG"}, {"name": "A Swart", "club": "LANGEBAANWEG"}, {"name": "A Tromp", "club": "LANGEBAANWEG"}, {"name": "A. Hollingsworth", "club": "LAGOON"}, {"name": "A. Stander", "club": "LAGOON"}, {"name": "Abraham Singels", "club": "LANGEBAANWEG"}, {"name": "Abrahan Singels", "club": "LANGEBAANWEG"}, {"name": "Adriaan Hubach", "club": "YZERFONTEIN"}, {"name": "Allan Smith", "club": "YZERFONTEIN"}, {"name": "Alta Vos", "club": "MOORREESBURG"}, {"name": "Alwyn Visser", "club": "LAGOON"}, {"name": "Andre Louw", "club": "YZERFONTEIN"}, {"name": "Andre Schillig", "club": "DARLING"}, {"name": "Andre Swart", "club": "LANGEBAANWEG"}, {"name": "Andre Vos", "club": "MOORREESBURG"}, {"name": "Andre van Reenen", "club": "VELDDRIF"}, {"name": "Andrea Burger", "club": "YZERFONTEIN"}, {"name": "Andrew Hollingsworth", "club": "LAGOON"}, {"name": "Andr\u00e9 Vos", "club": "MOORREESBURG"}, {"name": "Andy Jones", "club": "LANGEBAANWEG"}, {"name": "Anetta Groenewald", "club": "VELDDRIF"}, {"name": "Ann Tromp", "club": "LANGEBAANWEG"}, {"name": "Annemarie du Plessis", "club": "VELDDRIF"}, {"name": "Ansie Van Wyk", "club": "LANGEBAANWEG"}, {"name": "Ansie du Preez", "club": "YZERFONTEIN"}, {"name": "Ansie van Wyk", "club": "LANGEBAANWEG"}, {"name": "Anton Maree", "club": "YZERFONTEIN"}, {"name": "Anton Muller", "club": "LAGOON"}, {"name": "Antro Pritchard", "club": "YZERFONTEIN"}, {"name": "Arnold van der Westhuizen", "club": "MOORREESBURG"}, {"name": "Arnold vd Westhuizen", "club": "MOORREESBURG"}, {"name": "At Stander", "club": "LAGOON"}, {"name": "Attie Stander", "club": "LAGOON"}, {"name": "Aubrey van Veen", "club": "YZERFONTEIN"}, {"name": "B. Groenewald", "club": "LAGOON"}, {"name": "B. Heydenrych", "club": "LAGOON"}, {"name": "Basie Louw", "club": "YZERFONTEIN"}, {"name": "Ben Pretorius", "club": "DARLING"}, {"name": "Ben Wiese", "club": "MOORREESBURG"}, {"name": "Bertena Groenewald", "club": "LAGOON"}, {"name": "Bertena Groenwald", "club": "LAGOON"}, {"name": "Biela Smith", "club": "LAGOON"}, {"name": "Blackie Swart", "club": "DARLING"}, {"name": "Brian Dunderdale", "club": "LANGEBAANWEG"}, {"name": "Brian Johnson", "club": "PORTERVILLE"}, {"name": "Bridget Heydenrych", "club": "LAGOON"}, {"name": "Carien Boshoff", "club": "LANGEBAANWEG"}, {"name": "Carl van Eck", "club": "LANGEBAANWEG"}, {"name": "Carol Wagner", "club": "DARLING"}, {"name": "Charlie Cromberge", "club": "LANGEBAANWEG"}, {"name": "Chris Joubert", "club": "PORTERVILLE"}, {"name": "Christelene Hull", "club": "CLANWILLIAM"}, {"name": "Christeline Hull", "club": "CLANWILLIAM"}, {"name": "Clintin Sias", "club": "CLANWILLIAM"}, {"name": "Clive Toerien", "club": "LANGEBAANWEG"}, {"name": "Connie Olivier", "club": "LANGEBAANWEG"}, {"name": "Corinne Groenewald", "club": "MOORREESBURG"}, {"name": "Cornelis Olivier", "club": "LANGEBAANWEG"}, {"name": "Cristie Mouton", "club": "CLANWILLIAM"}, {"name": "C\u00e9cele van Rooyen", "club": "MOORREESBURG"}, {"name": "Danie Smith", "club": "LAGOON"}, {"name": "Darryl le Roux", "club": "VELDDRIF"}, {"name": "Des Adams", "club": "VELDDRIF"}, {"name": "Diane Schaafsma", "club": "LANGEBAANWEG"}, {"name": "Dirkie Pieterse", "club": "MOORREESBURG"}, {"name": "Duane Petzer", "club": "DARLING"}, {"name": "Eddie Husselman", "club": "LAGOON"}, {"name": "Eden Syster", "club": "CLANWILLIAM"}, {"name": "Elana Fourie", "club": "LANGEBAANWEG"}, {"name": "Eljo Basson", "club": "MOORREESBURG"}, {"name": "Elma Louw", "club": "YZERFONTEIN"}, {"name": "Elza Bester", "club": "LANGEBAANWEG"}, {"name": "Eric Lorimer", "club": "YZERFONTEIN"}, {"name": "Erika Viljoen", "club": "PORTERVILLE"}, {"name": "Esther Rutter", "club": "LAGOON"}, {"name": "Etienne Coetzee", "club": "LANGEBAANWEG"}, {"name": "Ettiene Coetzee", "club": "VELDDRIF"}, {"name": "Evan Fourie", "club": "PORTERVILLE"}, {"name": "F Venter", "club": "LANGEBAANWEG"}, {"name": "F. van Rooyen", "club": "LAGOON"}, {"name": "Fanie van Rooyen", "club": "LAGOON"}, {"name": "Floris Venter", "club": "LANGEBAANWEG"}, {"name": "Francois Trotskie", "club": "DARLING"}, {"name": "Frans Von Moltke", "club": "LAGOON"}, {"name": "Franz Von Molkte", "club": "LAGOON"}, {"name": "Franz von Moltke", "club": "LAGOON"}, {"name": "Fred Rautenbach", "club": "LANGEBAANWEG"}, {"name": "Frikkie van der Merwe", "club": "VELDDRIF"}, {"name": "G Duncan", "club": "LANGEBAANWEG"}, {"name": "G Hollander", "club": "LANGEBAANWEG"}, {"name": "G. Lotz", "club": "LAGOON"}, {"name": "Garth De Villiers", "club": "LAGOON"}, {"name": "Garth Duncan", "club": "LANGEBAANWEG"}, {"name": "Gary Mc Dowell", "club": "VELDDRIF"}, {"name": "Gary McDowell", "club": "VELDDRIF"}, {"name": "Gary Smith", "club": "YZERFONTEIN"}, {"name": "George Oldfield", "club": "VELDDRIF"}, {"name": "Georgie Hollander", "club": "LANGEBAANWEG"}, {"name": "Gerda Wiehahn", "club": "VELDDRIF"}, {"name": "Gerrit Viljoen", "club": "MOORREESBURG"}, {"name": "Glen Pritchard", "club": "YZERFONTEIN"}, {"name": "Glenda Lotz", "club": "LAGOON"}, {"name": "Greg Lawrence", "club": "YZERFONTEIN"}, {"name": "H Beukes", "club": "LANGEBAANWEG"}, {"name": "H Husselman", "club": "LANGEBAANWEG"}, {"name": "H. Husselman", "club": "LAGOON"}, {"name": "Hammies Van Niekerk", "club": "LAGOON"}, {"name": "Hammies van Niekerk", "club": "LAGOON"}, {"name": "Hannes Beukes", "club": "LANGEBAANWEG"}, {"name": "Hannes Swart", "club": "LANGEBAANWEG"}, {"name": "Harry Mulder", "club": "VELDDRIF"}, {"name": "Harry Muller", "club": "VELDDRIF"}, {"name": "Heloise Schut", "club": "LAGOON"}, {"name": "Hennie Kotze", "club": "PORTERVILLE"}, {"name": "Hennie Van Rensburg", "club": "YZERFONTEIN"}, {"name": "Hennie van Rensburg", "club": "YZERFONTEIN"}, {"name": "Herman Fourie", "club": "LANGEBAANWEG"}, {"name": "Herman Pieters", "club": "PORTERVILLE"}, {"name": "Herman van Lill", "club": "LAGOON"}, {"name": "Hettie Husselman", "club": "LANGEBAANWEG"}, {"name": "I. Venter", "club": "LAGOON"}, {"name": "Ian Bester", "club": "LANGEBAANWEG"}, {"name": "Ian Rice", "club": "LANGEBAANWEG"}, {"name": "Ian Strever", "club": "YZERFONTEIN"}, {"name": "Ina Rudolph", "club": "YZERFONTEIN"}, {"name": "Irene Westenraad", "club": "LANGEBAANWEG"}, {"name": "Irene Westraad", "club": "LANGEBAANWEG"}, {"name": "Irvine Reid", "club": "YZERFONTEIN"}, {"name": "Isabel Pienaar", "club": "YZERFONTEIN"}, {"name": "Ivan Roos", "club": "LANGEBAANWEG"}, {"name": "Izak Venter", "club": "LAGOON"}, {"name": "J.C. Latter", "club": "VELDDRIF"}, {"name": "JC Latter", "club": "VELDDRIF"}, {"name": "Jackie Bockelmann", "club": "VELDDRIF"}, {"name": "Jackie Bokelmann", "club": "VELDDRIF"}, {"name": "Jaco Kriek", "club": "MOORREESBURG"}, {"name": "Jaco Uys", "club": "LANGEBAANWEG"}, {"name": "Jaco Van Rooy", "club": "CLANWILLIAM"}, {"name": "Jaco Visagie", "club": "LAGOON"}, {"name": "Jacques du Toit", "club": "LANGEBAANWEG"}, {"name": "Jade Kruger", "club": "LANGEBAANWEG"}, {"name": "Jan Booyzen", "club": "LANGEBAANWEG"}, {"name": "Jannie Paterson", "club": "YZERFONTEIN"}, {"name": "Jannie Roos", "club": "LAGOON"}, {"name": "Jansie Steyn", "club": "VELDDRIF"}, {"name": "Jean Gouws", "club": "LANGEBAANWEG"}, {"name": "Jeanie Stander", "club": "CLANWILLIAM"}, {"name": "Jen Martin", "club": "YZERFONTEIN"}, {"name": "Jen Soekoe", "club": "YZERFONTEIN"}, {"name": "Jenny Martin", "club": "YZERFONTEIN"}, {"name": "Jill Snyman", "club": "LAGOON"}, {"name": "Joey Terblanche", "club": "YZERFONTEIN"}, {"name": "Johan Kriel", "club": "DARLING"}, {"name": "Johan Pienaar", "club": "DARLING"}, {"name": "Johan Retief", "club": "YZERFONTEIN"}, {"name": "Johan Roos", "club": "LANGEBAANWEG"}, {"name": "Johan Snyman", "club": "LANGEBAANWEG"}, {"name": "Johan Terblanche", "club": "YZERFONTEIN"}, {"name": "Johan Volschenk", "club": "YZERFONTEIN"}, {"name": "Johan du Toit", "club": "MOORREESBURG"}, {"name": "Johan van der Linde", "club": "LANGEBAANWEG"}, {"name": "Johann Smuts", "club": "MOORREESBURG"}, {"name": "John Goodwin", "club": "VELDDRIF"}, {"name": "Jonathan Petersen", "club": "DARLING"}, {"name": "Josie Jones", "club": "LANGEBAANWEG"}, {"name": "Judy Mouton", "club": "CLANWILLIAM"}, {"name": "K Stemmet", "club": "LANGEBAANWEG"}, {"name": "K du Toit", "club": "LANGEBAANWEG"}, {"name": "Karenne du Toit", "club": "LANGEBAANWEG"}, {"name": "Karenn\u00e9 du Toit", "club": "LANGEBAANWEG"}, {"name": "Karenn\u00ea du Toit", "club": "LANGEBAANWEG"}, {"name": "Karin du Toit", "club": "LANGEBAANWEG"}, {"name": "Kay Puttick", "club": "VELDDRIF"}, {"name": "Keith Baker", "club": "VELDDRIF"}, {"name": "Kiewiet van Rooyen", "club": "MOORREESBURG"}, {"name": "Koot Snyman", "club": "YZERFONTEIN"}, {"name": "Kyle Stemmet", "club": "LANGEBAANWEG"}, {"name": "L Smyth", "club": "LANGEBAANWEG"}, {"name": "L Viljoen", "club": "LANGEBAANWEG"}, {"name": "Lara Cilliers", "club": "YZERFONTEIN"}, {"name": "Lat van Zyl", "club": "PORTERVILLE"}, {"name": "Laura White", "club": "LANGEBAANWEG"}, {"name": "Leon Beer", "club": "LANGEBAANWEG"}, {"name": "Leon Meyer", "club": "VELDDRIF"}, {"name": "Leonie Viljoen", "club": "LANGEBAANWEG"}, {"name": "Lesley Smyth", "club": "LANGEBAANWEG"}, {"name": "Linda Engelbrecht", "club": "LANGEBAANWEG"}, {"name": "Linda Rossouw", "club": "LAGOON"}, {"name": "Linda Russouw", "club": "LAGOON"}, {"name": "Lois Kriek", "club": "MOORREESBURG"}, {"name": "Lottie Bezuidenhout", "club": "DARLING"}, {"name": "Louis Fourie", "club": "PORTERVILLE"}, {"name": "Louis Visser", "club": "CLANWILLIAM"}, {"name": "Lo\u00efs Kriek", "club": "MOORREESBURG"}, {"name": "Lucas Groenewald", "club": "VELDDRIF"}, {"name": "Lukas Greonewald", "club": "VELDDRIF"}, {"name": "Lukas Groenewald", "club": "VELDDRIF"}, {"name": "M Venter", "club": "LANGEBAANWEG"}, {"name": "M. Stander", "club": "LAGOON"}, {"name": "Maretha Mouton", "club": "LAGOON"}, {"name": "Margie Notnagel", "club": "VELDDRIF"}, {"name": "Marie Snyman", "club": "LAGOON"}, {"name": "Marieta Stander", "club": "LAGOON"}, {"name": "Marietjie Venter", "club": "LANGEBAANWEG"}, {"name": "Marietjie Viljoen", "club": "MOORREESBURG"}, {"name": "Mariette Marx", "club": "YZERFONTEIN"}, {"name": "Mariette Visser", "club": "LAGOON"}, {"name": "Marina Von Moltke", "club": "LAGOON"}, {"name": "Marina Williams", "club": "VELDDRIF"}, {"name": "Marina von Moltke", "club": "LAGOON"}, {"name": "Marion Oldfield", "club": "VELDDRIF"}, {"name": "Marius Jacobs", "club": "VELDDRIF"}, {"name": "Marius Vorster", "club": "VELDDRIF"}, {"name": "Marius Voster", "club": "VELDDRIF"}, {"name": "Martie Visser", "club": "CLANWILLIAM"}, {"name": "Martin Seyferdt", "club": "LANGEBAANWEG"}, {"name": "Martin Seyfferdt", "club": "LANGEBAANWEG"}, {"name": "Maureen Blanckenberg", "club": "VELDDRIF"}, {"name": "Maureen Smith", "club": "YZERFONTEIN"}, {"name": "Melodie Leyland", "club": "DARLING"}, {"name": "Mercy Thomas", "club": "YZERFONTEIN"}, {"name": "Mitzi Carroll", "club": "VELDDRIF"}, {"name": "Mitzie Carroll", "club": "VELDDRIF"}, {"name": "N Seyfferdt", "club": "LANGEBAANWEG"}, {"name": "Neels Kotze", "club": "YZERFONTEIN"}, {"name": "Neil Williams", "club": "VELDDRIF"}, {"name": "Netaneel Hesselman", "club": "CLANWILLIAM"}, {"name": "Nethaneel Hesselman", "club": "CLANWILLIAM"}, {"name": "Nico Zandberg", "club": "VELDDRIF"}, {"name": "Niel Williams", "club": "VELDDRIF"}, {"name": "Norma Seyfferdt", "club": "LANGEBAANWEG"}, {"name": "Ossie Jonker", "club": "LAGOON"}, {"name": "Otto van der Merwe", "club": "YZERFONTEIN"}, {"name": "P Beer", "club": "LANGEBAANWEG"}, {"name": "P. Lotz", "club": "LAGOON"}, {"name": "P. Sackim", "club": "LAGOON"}, {"name": "Pam Beer", "club": "LANGEBAANWEG"}, {"name": "Pam Melck", "club": "LANGEBAANWEG"}, {"name": "Patricia Cheetham", "club": "PORTERVILLE"}, {"name": "Patrick Carroll", "club": "VELDDRIF"}, {"name": "Paul Grobler", "club": "VELDDRIF"}, {"name": "Paul Minnaar", "club": "LAGOON"}, {"name": "Paul Neethling", "club": "LANGEBAANWEG"}, {"name": "Paula Swanepoel", "club": "LANGEBAANWEG"}, {"name": "Paula Viljoen", "club": "PORTERVILLE"}, {"name": "Penny Sackim", "club": "LAGOON"}, {"name": "Peter Hall", "club": "VELDDRIF"}, {"name": "Petrus Jansen", "club": "CLANWILLIAM"}, {"name": "Pierre Olivier", "club": "CLANWILLIAM"}, {"name": "Pierre du Toit", "club": "LANGEBAANWEG"}, {"name": "Pieter Hull", "club": "CLANWILLIAM"}, {"name": "Pieter Lindenberg", "club": "YZERFONTEIN"}, {"name": "Pieter Lotz", "club": "LAGOON"}, {"name": "Pieter Wilemse", "club": "MOORREESBURG"}, {"name": "Pieter Willemse", "club": "MOORREESBURG"}, {"name": "Pieter van Eeden", "club": "YZERFONTEIN"}, {"name": "Pina Krumm", "club": "LAGOON"}, {"name": "Pino Pitacco", "club": "LANGEBAANWEG"}, {"name": "Polla Boshoff", "club": "LAGOON"}, {"name": "Porky Bruwer", "club": "VELDDRIF"}, {"name": "R. Rossouw", "club": "LAGOON"}, {"name": "Renata van Deventer", "club": "LANGEBAANWEG"}, {"name": "Rentia Malan", "club": "YZERFONTEIN"}, {"name": "Rhynhardt Naurattel", "club": "PORTERVILLE"}, {"name": "Ria Steenkamp", "club": "YZERFONTEIN"}, {"name": "Riana de Beer", "club": "VELDDRIF"}, {"name": "Rika Mitchell", "club": "YZERFONTEIN"}, {"name": "Roelof Snyman", "club": "LANGEBAANWEG"}, {"name": "Ronnie Rossouw", "club": "LAGOON"}, {"name": "Ronnie du Toit", "club": "VELDDRIF"}, {"name": "Roy Campbell", "club": "VELDDRIF"}, {"name": "Rudolph Louw", "club": "YZERFONTEIN"}, {"name": "Samuel Thomas", "club": "YZERFONTEIN"}, {"name": "Sannette Haas", "club": "VELDDRIF"}, {"name": "Shirley Berry", "club": "YZERFONTEIN"}, {"name": "Snakkie Snyders", "club": "PORTERVILLE"}, {"name": "Sonja Slippers", "club": "LANGEBAANWEG"}, {"name": "Stefanus Olivier", "club": "PORTERVILLE"}, {"name": "Steve Bruwer", "club": "VELDDRIF"}, {"name": "Stoffie Stoffberg", "club": "VELDDRIF"}, {"name": "Stoffies Stoffberg", "club": "VELDDRIF"}, {"name": "Sue Austin", "club": "LANGEBAANWEG"}, {"name": "Sue Tweeddale", "club": "YZERFONTEIN"}, {"name": "T McCalgan", "club": "LANGEBAANWEG"}, {"name": "T Rowan", "club": "LANGEBAANWEG"}, {"name": "T. Hugo", "club": "LAGOON"}, {"name": "T. Loubser", "club": "LAGOON"}, {"name": "T. Rowan", "club": "LAGOON"}, {"name": "T. White", "club": "LAGOON"}, {"name": "TJ Mabetoa", "club": "LANGEBAANWEG"}, {"name": "Tania Hugo", "club": "LAGOON"}, {"name": "Terry Gott", "club": "VELDDRIF"}, {"name": "Tertius Loubscher", "club": "LAGOON"}, {"name": "Tertius Loubser", "club": "LAGOON"}, {"name": "Thea van der Merwe", "club": "YZERFONTEIN"}, {"name": "Theunis van der Westhuizen", "club": "VREDENDAL"}, {"name": "Thomas Samuel", "club": "YZERFONTEIN"}, {"name": "Thomas Snyman", "club": "VELDDRIF"}, {"name": "Tina Rowan", "club": "LANGEBAANWEG"}, {"name": "Toby Duffus", "club": "DARLING"}, {"name": "Tom Tromp", "club": "LANGEBAANWEG"}, {"name": "Tony Ryan", "club": "YZERFONTEIN"}, {"name": "Trevor McCalgan", "club": "LANGEBAANWEG"}, {"name": "Trevor Mccalgan", "club": "LANGEBAANWEG"}, {"name": "Trevor Scheepers", "club": "VELDDRIF"}, {"name": "Trevor White", "club": "LAGOON"}, {"name": "Velia Hurter", "club": "LANGEBAANWEG"}, {"name": "W Kroon", "club": "LANGEBAANWEG"}, {"name": "Wally Walters", "club": "VELDDRIF"}, {"name": "Wayne Boucher", "club": "LANGEBAANWEG"}, {"name": "Wiehan Viljoen", "club": "YZERFONTEIN"}, {"name": "Wilhelm Kroon", "club": "LANGEBAANWEG"}, {"name": "Wilma Els", "club": "YZERFONTEIN"}, {"name": "Wilma Wolfardt", "club": "VELDDRIF"}, {"name": "Wilma Wolvaardt", "club": "VELDDRIF"}, {"name": "Wlima Wolvaardt", "club": "VELDDRIF"}, {"name": "Wynand du Preez", "club": "YZERFONTEIN"}];
+const CLUBS = ["CLANWILLIAM", "DARLING", "LAGOON", "LANGEBAANWEG", "MOORREESBURG", "PORTERVILLE", "VELDDRIF", "VREDENDAL", "YZERFONTEIN"];
+const LOGO = "data:image/png;base64,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";
+</script>
+<script>
+// ============================================================
+// STATE
+// ============================================================
+let state = { players: [], events: [], draws: [] };
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem('wc_bowls_2627');
+    if (saved) {
+      state = JSON.parse(saved);
+      if (!state.draws) state.draws = [];
+      return;
+    }
+  } catch(e) {}
+  state.players = SEED_PLAYERS.map((p, i) => ({ id: 'p' + i, name: p.name, club: p.club }));
+  state.events = [];
+  state.draws = [];
+  saveState();
+}
+
+function saveState() {
+  try { localStorage.setItem('wc_bowls_2627', JSON.stringify(state)); } catch(e) {}
+}
+
+function nextId(prefix) {
+  return prefix + Date.now() + Math.random().toString(36).slice(2,6);
+}
+
+// ============================================================
+// NAV
+// ============================================================
+let currentPage = 'dashboard';
+let currentEventId = null;
+
+function showPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  if (btn) { btn.classList.add('active'); }
+  else {
+    const map = { dashboard:0, events:1, draws:2, players:3 };
+    const tabs = document.querySelectorAll('.nav-tab');
+    if (map[name] !== undefined) tabs[map[name]].classList.add('active');
+  }
+  currentPage = name;
+  if (name === 'dashboard') renderDashboard();
+  if (name === 'events') renderEvents();
+  if (name === 'players') renderPlayers();
+  if (name === 'draws') renderDrawsPage();
+}
+
+function openEventDetail(eventId) {
+  currentEventId = eventId;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-event-detail').classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.nav-tab')[1].classList.add('active');
+  document.getElementById('ed-search').value = '';
+  renderEventDetail('');
+}
+
+// ============================================================
+// EVENTS
+// ============================================================
+function renderEvents() {
+  const container = document.getElementById('events-container');
+  if (!state.events.length) {
+    container.innerHTML = `<div class="empty-state">
+      <div class="ico">&#127941;</div>
+      <p>No events yet</p>
+      <small>Click "+ Add Event" to create your first 2026/27 tournament</small>
+    </div>`;
+    return;
+  }
+  const sorted = [...state.events].sort((a,b) => (a.date||'zzz').localeCompare(b.date||'zzz'));
+  let html = '<div class="events-grid">';
+  sorted.forEach(ev => {
+    const fmt = ev.format ? ev.format[0].toUpperCase()+ev.format.slice(1) : '';
+    const n = ev.entries.length;
+    let rows = '';
+    if (ev.date) rows += `<div class="tile-info-row"><span class="ico">&#128197;</span>${formatDate(ev.date)}</div>`;
+    if (ev.closing) rows += `<div class="tile-info-row"><span class="ico">&#9997;</span>Closes ${formatDate(ev.closing)}</div>`;
+    if (ev.venue) rows += `<div class="tile-info-row"><span class="ico">&#127968;</span>${ev.venue}</div>`;
+    if (ev.notes) rows += `<div class="tile-info-row"><span class="ico">&#128203;</span>${ev.notes}</div>`;
+    html += `<div class="event-tile" onclick="openEventDetail('${ev.id}')">
+      <div class="tile-head">
+        <div class="tile-title">${ev.name}</div>
+        <div class="tile-badges">
+          <span class="tile-badge">${fmt}</span>
+          <span class="tile-badge orange">${n} ${n===1?'player':'players'}</span>
+        </div>
+      </div>
+      <div class="tile-body">${rows||'<div style="color:rgba(255,255,255,.4);font-size:.78rem">No details added</div>'}</div>
+      <div class="tile-foot"><span class="tile-count"><strong>${n}</strong> entr${n===1?'y':'ies'}</span><span class="tile-arrow">View &#8594;</span></div>
+    </div>`;
+  });
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  try { return new Date(d+'T00:00:00').toLocaleDateString('en-ZA', {day:'numeric',month:'short',year:'numeric'}); }
+  catch(e) { return d; }
+}
+
+// ============================================================
+// EVENT DETAIL
+// ============================================================
+function renderEventDetail(q) {
+  const ev = state.events.find(e => e.id === currentEventId);
+  if (!ev) return;
+  document.getElementById('ed-title').textContent = ev.name;
+  const meta = [];
+  if (ev.date) meta.push(`<div class="ed-meta-item">&#128197; ${formatDate(ev.date)}</div>`);
+  if (ev.closing) meta.push(`<div class="ed-meta-item">&#9997; Closes ${formatDate(ev.closing)}</div>`);
+  if (ev.venue) meta.push(`<div class="ed-meta-item">&#127968; ${ev.venue}</div>`);
+  if (ev.format) meta.push(`<div class="ed-meta-item">&#127992; ${ev.format[0].toUpperCase()+ev.format.slice(1)}</div>`);
+  if (ev.notes) meta.push(`<div class="ed-meta-item">&#128203; ${ev.notes}</div>`);
+  document.getElementById('ed-meta').innerHTML = meta.join('');
+
+  const lq = (q||'').toLowerCase();
+  const players = ev.entries
+    .map(pid => state.players.find(p => p.id === pid))
+    .filter(Boolean)
+    .filter(p => !lq || p.name.toLowerCase().includes(lq) || (p.club||'').toLowerCase().includes(lq))
+    .sort((a,b) => a.name.localeCompare(b.name));
+
+  document.getElementById('ed-entry-count').textContent =
+    `${ev.entries.length} player${ev.entries.length!==1?'s':''} entered`;
+
+  if (!players.length) {
+    document.getElementById('ed-entries').innerHTML =
+      `<div style="padding:24px;text-align:center;color:var(--text-mid)">${lq?'No players match your search':'No players added yet — click "+ Add / Edit Players"'}</div>`;
+    return;
+  }
+
+  const rows = players.map((p, i) => `<tr>
+    <td class="no-col">${i+1}</td>
+    <td style="font-weight:600">${p.name}</td>
+    <td class="club-col"><span class="club-pill">${p.club||''}</span></td>
+    <td style="text-align:right;padding-right:12px">
+      <button class="del-row" onclick="removeFromEvent('${ev.id}','${p.id}')" title="Remove">&#10005;</button>
+    </td>
+  </tr>`).join('');
+
+  document.getElementById('ed-entries').innerHTML =
+    `<table><thead><tr><th style="width:40px">#</th><th>Player</th><th>Club</th><th style="width:44px"></th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function removeFromEvent(evId, pid) {
+  const ev = state.events.find(e => e.id === evId);
+  if (!ev) return;
+  ev.entries = ev.entries.filter(id => id !== pid);
+  saveState();
+  renderEventDetail(document.getElementById('ed-search').value);
+}
+
+function deleteCurrentEvent() {
+  const ev = state.events.find(e => e.id === currentEventId);
+  if (!ev || !confirm(`Delete "${ev.name}"? This cannot be undone.`)) return;
+  state.events = state.events.filter(e => e.id !== currentEventId);
+  state.draws = state.draws.filter(d => d.eventId !== currentEventId);
+  saveState();
+  showPage('events', null);
+}
+
+// ============================================================
+// ADD / EDIT EVENT
+// ============================================================
+let editingEventId = null;
+
+function openAddEvent() {
+  editingEventId = null;
+  document.getElementById('event-modal-title').textContent = 'Add Event';
+  ['ev-name','ev-venue','ev-notes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('ev-format').value = 'singles';
+  document.getElementById('ev-date').value = '';
+  document.getElementById('ev-closing').value = '';
+  openModal('modal-event');
+}
+
+function openEditEvent() {
+  const ev = state.events.find(e => e.id === currentEventId);
+  if (!ev) return;
+  editingEventId = ev.id;
+  document.getElementById('event-modal-title').textContent = 'Edit Event';
+  document.getElementById('ev-name').value = ev.name;
+  document.getElementById('ev-format').value = ev.format || 'singles';
+  document.getElementById('ev-date').value = ev.date || '';
+  document.getElementById('ev-venue').value = ev.venue || '';
+  document.getElementById('ev-closing').value = ev.closing || '';
+  document.getElementById('ev-notes').value = ev.notes || '';
+  openModal('modal-event');
+}
+
+function saveEvent() {
+  const name = document.getElementById('ev-name').value.trim();
+  if (!name) { alert('Please enter an event name.'); return; }
+  const payload = {
+    name,
+    format: document.getElementById('ev-format').value,
+    date: document.getElementById('ev-date').value,
+    venue: document.getElementById('ev-venue').value.trim(),
+    closing: document.getElementById('ev-closing').value,
+    notes: document.getElementById('ev-notes').value.trim(),
+  };
+  if (editingEventId) {
+    const ev = state.events.find(e => e.id === editingEventId);
+    if (ev) Object.assign(ev, payload);
+  } else {
+    state.events.push({ id: nextId('ev'), entries: [], ...payload });
+  }
+  saveState();
+  closeModal('modal-event');
+  if (editingEventId && currentEventId === editingEventId) renderEventDetail('');
+  else { showPage('events', null); }
+}
+
+// ============================================================
+// PLAYER PICKER
+// ============================================================
+let pickerSelected = new Set();
+let pickerClubFilter = '';
+
+function openAddPlayers() {
+  const ev = state.events.find(e => e.id === currentEventId);
+  if (!ev) return;
+  pickerSelected = new Set(ev.entries);
+  pickerClubFilter = '';
+  document.getElementById('add-players-sub').textContent = ev.name;
+  document.getElementById('picker-search').value = '';
+  renderPickerClubs();
+  renderPicker();
+  openModal('modal-players');
+}
+
+function renderPickerClubs() {
+  document.getElementById('picker-club-filter').innerHTML =
+    ['', ...CLUBS].map(c =>
+      `<button class="club-chip ${!pickerClubFilter&&!c?'active':pickerClubFilter===c?'active':''}"
+        onclick="setPickerClub('${c}',this)">${c||'All'}</button>`
+    ).join('');
+}
+
+function setPickerClub(club, btn) {
+  pickerClubFilter = club;
+  document.querySelectorAll('#picker-club-filter .club-chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPicker();
+}
+
+function renderPicker() {
+  const q = document.getElementById('picker-search').value.toLowerCase().trim();
+  const players = state.players.filter(p => {
+    if (pickerClubFilter && p.club !== pickerClubFilter) return false;
+    if (q && !p.name.toLowerCase().includes(q) && !(p.club||'').toLowerCase().includes(q)) return false;
+    return true;
+  }).sort((a,b) => a.name.localeCompare(b.name));
+
+  document.getElementById('picker-count').textContent = `${pickerSelected.size} player${pickerSelected.size!==1?'s':''} selected`;
+  document.getElementById('picker-list').innerHTML = players.map(p => {
+    const sel = pickerSelected.has(p.id);
+    return `<div class="picker-item ${sel?'selected':''}" onclick="togglePicker('${p.id}')">
+      <span class="picker-check">${sel?'&#10003;':''}</span>
+      <div style="flex:1">
+        <div class="picker-name">${p.name}</div>
+        <div class="picker-club-tag">${p.club||''}</div>
+      </div>
+    </div>`;
+  }).join('') || '<div style="padding:16px;text-align:center;color:var(--text-mid)">No players found</div>';
+}
+
+function togglePicker(id) {
+  if (pickerSelected.has(id)) pickerSelected.delete(id);
+  else pickerSelected.add(id);
+  renderPicker();
+}
+
+function confirmAddPlayers() {
+  const ev = state.events.find(e => e.id === currentEventId);
+  if (!ev) return;
+  ev.entries = [...pickerSelected];
+  saveState();
+  closeModal('modal-players');
+  renderEventDetail('');
+}
+
+// ============================================================
+// ADD / EDIT PLAYER
+// ============================================================
+let editingPlayerId = null;
+
+function openAddPlayer() {
+  editingPlayerId = null;
+  document.getElementById('player-modal-title').textContent = 'Add Player';
+  document.getElementById('new-player-name').value = '';
+  document.getElementById('new-player-club').value = '';
+  openModal('modal-add-player');
+}
+
+function openEditPlayerModal() {
+  const p = state.players.find(p => p.id === editingPlayerId);
+  if (!p) return;
+  document.getElementById('player-modal-title').textContent = 'Edit Player';
+  document.getElementById('new-player-name').value = p.name;
+  document.getElementById('new-player-club').value = p.club || '';
+  closeModal('modal-player-info');
+  openModal('modal-add-player');
+}
+
+function saveNewPlayer() {
+  const name = document.getElementById('new-player-name').value.trim();
+  const club = document.getElementById('new-player-club').value;
+  if (!name) { alert('Please enter a name.'); return; }
+
+  if (editingPlayerId) {
+    const p = state.players.find(p => p.id === editingPlayerId);
+    if (p) { p.name = name; p.club = club; }
+  } else {
+    const exists = state.players.find(p => p.name.toLowerCase() === name.toLowerCase());
+    if (exists && !confirm(`"${name}" already exists. Add anyway?`)) return;
+    state.players.push({ id: nextId('p'), name, club });
+  }
+  state.players.sort((a,b) => a.name.localeCompare(b.name));
+  saveState();
+  closeModal('modal-add-player');
+  renderPlayers();
+}
+
+// ============================================================
+// PLAYERS PAGE
+// ============================================================
+let playerClubFilter = '';
+
+function renderPlayers() {
+  document.getElementById('club-filter-row').innerHTML =
+    ['', ...CLUBS].map(c =>
+      `<button class="club-chip ${playerClubFilter===c&&c?'active':!playerClubFilter&&!c?'active':''}"
+        onclick="setPlayerClub('${c}',this)">${c||'All'}</button>`
+    ).join('');
+
+  const q = document.getElementById('player-search').value.toLowerCase().trim();
+  const players = state.players.filter(p => {
+    if (playerClubFilter && p.club !== playerClubFilter) return false;
+    if (q && !p.name.toLowerCase().includes(q) && !(p.club||'').toLowerCase().includes(q)) return false;
+    return true;
+  });
+
+  const evCount = {};
+  state.events.forEach(ev => ev.entries.forEach(pid => evCount[pid] = (evCount[pid]||0)+1));
+
+  document.getElementById('players-grid').innerHTML = players.map(p => {
+    const n = evCount[p.id] || 0;
+    const nameHl = q ? p.name.replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'), m=>`<mark>${m}</mark>`) : p.name;
+    return `<div class="player-card" onclick="openPlayerInfo('${p.id}')">
+      <div class="player-name">${nameHl}</div>
+      <div class="player-club">${p.club||''}</div>
+      ${n?`<div class="player-events">${n} event${n>1?'s':''} this season</div>`:''}
+    </div>`;
+  }).join('') || '<div style="color:var(--text-mid);padding:24px">No players found.</div>';
+}
+
+function setPlayerClub(club, btn) {
+  playerClubFilter = club;
+  document.querySelectorAll('#club-filter-row .club-chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPlayers();
+}
+
+function openPlayerInfo(pid) {
+  editingPlayerId = pid;
+  const player = state.players.find(p => p.id === pid);
+  if (!player) return;
+  document.getElementById('pp-name').textContent = player.name;
+  document.getElementById('pp-club').textContent = player.club || 'No club assigned';
+
+  const evs = state.events.filter(ev => ev.entries.includes(pid));
+  document.getElementById('pp-events').innerHTML = evs.length
+    ? evs.map(ev => `<div class="pp-event-row" onclick="closeModal('modal-player-info');openEventDetail('${ev.id}')">
+        <div>
+          <div class="pp-event-name">${ev.name}</div>
+          <div class="pp-event-sub">${[ev.venue, ev.date?formatDate(ev.date):''].filter(Boolean).join(' · ')}</div>
+        </div>
+        <span style="color:var(--orange)">&#8594;</span>
+      </div>`).join('')
+    : '<div style="color:var(--text-mid);font-size:.85rem">Not entered in any events yet</div>';
+
+  const venues = evs.map(e => e.venue).filter(Boolean);
+  const vCounts = {};
+  venues.forEach(v => vCounts[v] = (vCounts[v]||0)+1);
+  const sorted = Object.entries(vCounts).sort((a,b)=>b[1]-a[1]);
+  const maxV = sorted[0]?.[1] || 1;
+  document.getElementById('pp-venues').innerHTML = sorted.length
+    ? sorted.map(([v,c]) => {
+        const pct = Math.round(c/maxV*100);
+        const warn = c > 1;
+        return `<div class="venue-row">
+          <span class="venue-name" title="${v}">${v}</span>
+          <div class="venue-bar-wrap"><div class="venue-bar${warn?' warn':''}" style="width:${pct}%"></div></div>
+          <span class="venue-count">${c}</span>
+        </div>`;
+      }).join('')
+    : '<div style="color:var(--text-mid);font-size:.85rem">No venue data yet</div>';
+
+  document.getElementById('pp-delete-btn').onclick = () => deletePlayer(pid);
+  openModal('modal-player-info');
+}
+
+function deletePlayer(pid) {
+  const p = state.players.find(p => p.id === pid);
+  if (!confirm(`Remove "${p?.name}" from the player list?`)) return;
+  state.players = state.players.filter(p => p.id !== pid);
+  state.events.forEach(ev => { ev.entries = ev.entries.filter(id => id !== pid); });
+  saveState();
+  closeModal('modal-player-info');
+  renderPlayers();
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+let dashClubFilter = '';
+
+function renderDashboard() {
+  const q = document.getElementById('dash-search')?.value.toLowerCase().trim() || '';
+
+  const allVenues = [...new Set(state.events.filter(e=>e.venue).map(e=>e.venue))];
+  const active = new Set(state.events.flatMap(e => e.entries));
+  document.getElementById('dash-summary').innerHTML = `
+    <div class="sum-card"><div class="sum-num">${state.events.length}</div><div class="sum-label">Events</div></div>
+    <div class="sum-card"><div class="sum-num">${active.size}</div><div class="sum-label">Active Players</div></div>
+    <div class="sum-card"><div class="sum-num">${allVenues.length}</div><div class="sum-label">Venues Used</div></div>
+    <div class="sum-card"><div class="sum-num">${state.players.length}</div><div class="sum-label">Total Players</div></div>
+  `;
+
+  document.getElementById('dash-filters').innerHTML =
+    ['', ...CLUBS].map(c =>
+      `<button class="club-chip ${dashClubFilter===c&&c?'active':!dashClubFilter&&!c?'active':''}"
+        onclick="setDashClub('${c}',this)">${c||'All Clubs'}</button>`
+    ).join('');
+
+  const pvMap = {};
+  state.events.forEach(ev => {
+    if (!ev.venue) return;
+    ev.entries.forEach(pid => {
+      if (!pvMap[pid]) pvMap[pid] = {};
+      pvMap[pid][ev.venue] = (pvMap[pid][ev.venue]||0)+1;
+    });
+  });
+
+  const players = state.players.filter(p => {
+    if (dashClubFilter && p.club !== dashClubFilter) return false;
+    if (!pvMap[p.id]) return false;
+    if (q && !p.name.toLowerCase().includes(q) && !(p.club||'').toLowerCase().includes(q)) return false;
+    return true;
+  }).sort((a,b) => a.name.localeCompare(b.name));
+
+  if (!state.events.length) {
+    document.getElementById('dash-grid').innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+      <div class="ico">&#127967;</div>
+      <p>No events yet</p>
+      <small>Add events with venues to track venue rotation</small>
+    </div>`;
+    return;
+  }
+
+  if (!players.length) {
+    document.getElementById('dash-grid').innerHTML =
+      `<div style="color:var(--text-mid);padding:24px;grid-column:1/-1">No players with venue data${q?' matching "'+q+'"':''}.</div>`;
+    return;
+  }
+
+  document.getElementById('dash-grid').innerHTML = players.map(p => {
+    const vmap = pvMap[p.id];
+    const sorted = Object.entries(vmap).sort((a,b)=>b[1]-a[1]);
+    const maxC = sorted[0]?.[1] || 1;
+    const hasRepeat = sorted.some(([,c]) => c > 1);
+
+    const bars = sorted.map(([v,c]) => {
+      const pct = Math.round(c/maxC*100);
+      const isHigh = c === maxC && c > 1;
+      return `<div class="venue-row">
+        <span class="venue-name" title="${v}">${v}</span>
+        <div class="venue-bar-wrap"><div class="venue-bar${isHigh?' warn':''}" style="width:${pct}%"></div></div>
+        <span class="venue-count">${c}</span>
+      </div>`;
+    }).join('');
+
+    const warning = hasRepeat
+      ? `<div class="dash-warning">&#9888; ${sorted[0][0]} played ${sorted[0][1]}x — consider rotating</div>` : '';
+
+    return `<div class="dash-card">
+      <div class="dash-card-head">
+        <span class="dname">${p.name}</span>
+        <span class="dash-club-tag">${p.club||''}</span>
+      </div>
+      <div class="dash-card-body">${bars}${warning}</div>
+    </div>`;
+  }).join('');
+}
+
+function setDashClub(club, btn) {
+  dashClubFilter = club;
+  document.querySelectorAll('#dash-filters .club-chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderDashboard();
+}
+
+// ============================================================
+// DRAWS
+// ============================================================
+let currentDrawEventId = null;
+let drawDraggedPlayer = null;
+
+function openDrawForEvent() {
+  currentDrawEventId = currentEventId;
+  showPage('draws', null);
+  document.getElementById('draw-event-picker').value = currentEventId;
+  renderDrawContent();
+}
+
+function renderDrawsPage() {
+  const sel = document.getElementById('draw-event-picker');
+  sel.innerHTML = '<option value="">Choose an event...</option>' +
+    state.events.filter(e => e.entries.length > 0).map(ev =>
+      `<option value="${ev.id}" ${ev.id===currentDrawEventId?'selected':''}>${ev.name} (${ev.entries.length} players)</option>`
+    ).join('');
+  renderDrawContent();
+}
+
+function onDrawEventChange() {
+  currentDrawEventId = document.getElementById('draw-event-picker').value || null;
+  renderDrawContent();
+}
+
+function getOrCreateDraw(eventId) {
+  if (!eventId) return null;
+  let draw = state.draws.find(d => d.eventId === eventId);
+  if (!draw) {
+    draw = { eventId, sections: [], rankings: {} };
+    state.draws.push(draw);
+    saveState();
+  }
+  return draw;
+}
+
+function renderDrawContent() {
+  const container = document.getElementById('draw-content');
+  if (!currentDrawEventId) {
+    container.innerHTML = '<div class="empty-state"><div class="ico">&#127922;</div><p>Select an event to create or edit a draw</p></div>';
+    return;
+  }
+
+  const ev = state.events.find(e => e.id === currentDrawEventId);
+  if (!ev) { container.innerHTML = ''; return; }
+
+  const draw = getOrCreateDraw(currentDrawEventId);
+  const players = ev.entries.map(pid => state.players.find(p => p.id === pid)).filter(Boolean);
+
+  // Find unassigned players
+  const assignedIds = new Set();
+  draw.sections.forEach(s => s.players.forEach(pid => assignedIds.add(pid)));
+  const unassigned = players.filter(p => !assignedIds.has(p.id));
+
+  let html = '';
+
+  // Rankings section
+  html += `<div class="draw-setup">
+    <div class="detail-section-title">Player Rankings</div>
+    <p style="font-size:.78rem;color:var(--text-mid);margin-bottom:12px">Assign a rank number to each player (1 = strongest). Rankings are used for balanced auto-assignment.</p>
+    <div style="max-height:300px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--white)">
+      <table><thead><tr><th style="width:60px">Rank</th><th>Player</th><th>Club</th></tr></thead><tbody>`;
+
+  const sortedByRank = [...players].sort((a, b) => {
+    const ra = draw.rankings[a.id] || 9999;
+    const rb = draw.rankings[b.id] || 9999;
+    return ra - rb || a.name.localeCompare(b.name);
+  });
+
+  sortedByRank.forEach(p => {
+    const rank = draw.rankings[p.id] || '';
+    html += `<tr>
+      <td><input class="rank-input" type="number" min="1" value="${rank}" onchange="setRanking('${p.id}', this.value)" placeholder="-"></td>
+      <td style="font-weight:600">${p.name}</td>
+      <td><span class="club-pill">${p.club||''}</span></td>
+    </tr>`;
+  });
+
+  html += `</tbody></table></div></div>`;
+
+  // Section setup
+  html += `<div class="draw-setup">
+    <div class="detail-section-title">Sections</div>
+    <div class="draw-setup-row">
+      <label style="font-size:.82rem;font-weight:600">Number of sections:</label>
+      <input class="form-input" type="number" min="1" max="20" value="${draw.sections.length || ''}" id="draw-section-count" style="width:70px" placeholder="0">
+      <button class="btn-primary" onclick="setSectionCount()">Set Sections</button>
+      <button class="btn-secondary" onclick="autoAssignPlayers()">&#9889; Auto-Assign</button>
+      <button class="btn-danger" onclick="clearAllSections()">Clear All</button>
+    </div>
+  </div>`;
+
+  // Unassigned pool
+  html += `<div class="unassigned-pool" id="unassigned-pool"
+    ondragover="handleDragOver(event)" ondrop="handleDropUnassigned(event)">
+    <div class="unassigned-pool-title">Unassigned Players (${unassigned.length})</div>
+    <div class="unassigned-pool-body">`;
+
+  const unassignedSorted = [...unassigned].sort((a, b) => {
+    const ra = draw.rankings[a.id] || 9999;
+    const rb = draw.rankings[b.id] || 9999;
+    return ra - rb || a.name.localeCompare(b.name);
+  });
+
+  unassignedSorted.forEach(p => {
+    const rank = draw.rankings[p.id] || '-';
+    html += `<div class="draw-player-chip" draggable="true" data-pid="${p.id}"
+      ondragstart="handleDragStart(event,'${p.id}')" ondragend="handleDragEnd(event)">
+      <span class="rank-num">#${rank}</span>
+      <span class="chip-name">${p.name}</span>
+      <span class="chip-club">${p.club||''}</span>
+    </div>`;
+  });
+
+  html += `</div></div>`;
+
+  // Section columns
+  if (draw.sections.length) {
+    html += '<div class="draw-sections-grid">';
+    draw.sections.forEach((section, idx) => {
+      const sPlayers = section.players.map(pid => state.players.find(p => p.id === pid)).filter(Boolean);
+      html += `<div class="draw-section" id="draw-section-${idx}"
+        ondragover="handleDragOver(event)" ondrop="handleDropSection(event, ${idx})">
+        <div class="draw-section-head">
+          <span class="draw-section-title">Section ${idx + 1}</span>
+          <span class="draw-section-count">${sPlayers.length} player${sPlayers.length!==1?'s':''}</span>
+        </div>
+        <div class="draw-section-venue">
+          <label style="font-size:.7rem;font-weight:600;color:var(--text-mid)">Venue:</label>
+          <select class="form-select" style="font-size:.78rem;padding:5px 28px 5px 8px" onchange="setSectionVenue(${idx}, this.value)">
+            <option value="">No venue</option>
+            ${VENUES.map(v => `<option value="${v}" ${section.venue===v?'selected':''}>${v}</option>`).join('')}
+          </select>
+        </div>
+        <div class="draw-section-body">`;
+
+      sPlayers.forEach(p => {
+        const rank = draw.rankings[p.id] || '-';
+        html += `<div class="draw-player-chip" draggable="true" data-pid="${p.id}"
+          ondragstart="handleDragStart(event,'${p.id}')" ondragend="handleDragEnd(event)">
+          <span class="rank-num">#${rank}</span>
+          <span class="chip-name">${p.name}</span>
+          <span class="chip-club">${p.club||''}</span>
+          <button class="chip-remove" onclick="removeFromSection(${idx},'${p.id}')" title="Remove">&#10005;</button>
+        </div>`;
+      });
+
+      html += `</div></div>`;
+    });
+    html += '</div>';
+  }
+
+  container.innerHTML = html;
+}
+
+function setRanking(pid, value) {
+  const draw = getOrCreateDraw(currentDrawEventId);
+  if (!draw) return;
+  const v = parseInt(value);
+  if (v > 0) draw.rankings[pid] = v;
+  else delete draw.rankings[pid];
+  saveState();
+}
+
+function setSectionCount() {
+  const draw = getOrCreateDraw(currentDrawEventId);
+  if (!draw) return;
+  const count = parseInt(document.getElementById('draw-section-count').value) || 0;
+  if (count < 1) { alert('Please enter at least 1 section.'); return; }
+
+  // Preserve existing sections, add/remove as needed
+  while (draw.sections.length < count) {
+    draw.sections.push({ players: [], venue: '' });
+  }
+  // If reducing, move excess players back to unassigned
+  while (draw.sections.length > count) {
+    draw.sections.pop();
+  }
+  saveState();
+  renderDrawContent();
+}
+
+function clearAllSections() {
+  const draw = getOrCreateDraw(currentDrawEventId);
+  if (!draw) return;
+  if (!confirm('Clear all section assignments?')) return;
+  draw.sections.forEach(s => { s.players = []; });
+  saveState();
+  renderDrawContent();
+}
+
+function autoAssignPlayers() {
+  const draw = getOrCreateDraw(currentDrawEventId);
+  if (!draw || !draw.sections.length) {
+    alert('Please set up sections first.');
+    return;
+  }
+
+  const ev = state.events.find(e => e.id === currentDrawEventId);
+  if (!ev) return;
+
+  // Clear existing assignments
+  draw.sections.forEach(s => { s.players = []; });
+
+  // Get all players sorted by rank (snake draft)
+  const players = ev.entries.map(pid => state.players.find(p => p.id === pid)).filter(Boolean);
+  const ranked = [...players].sort((a, b) => {
+    const ra = draw.rankings[a.id] || 9999;
+    const rb = draw.rankings[b.id] || 9999;
+    return ra - rb || a.name.localeCompare(b.name);
+  });
+
+  // Snake draft: 1,2,3...n, n,...2,1, 1,2,3...
+  const numSections = draw.sections.length;
+  let direction = 1;
+  let sIdx = 0;
+
+  ranked.forEach(p => {
+    draw.sections[sIdx].players.push(p.id);
+    sIdx += direction;
+    if (sIdx >= numSections) { sIdx = numSections - 1; direction = -1; }
+    else if (sIdx < 0) { sIdx = 0; direction = 1; }
+  });
+
+  saveState();
+  renderDrawContent();
+}
+
+function setSectionVenue(sectionIdx, venue) {
+  const draw = getOrCreateDraw(currentDrawEventId);
+  if (!draw) return;
+  draw.sections[sectionIdx].venue = venue;
+  saveState();
+}
+
+function removeFromSection(sectionIdx, pid) {
+  const draw = getOrCreateDraw(currentDrawEventId);
+  if (!draw) return;
+  draw.sections[sectionIdx].players = draw.sections[sectionIdx].players.filter(id => id !== pid);
+  saveState();
+  renderDrawContent();
+}
+
+// Drag and drop
+function handleDragStart(e, pid) {
+  drawDraggedPlayer = pid;
+  e.target.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', pid);
+}
+
+function handleDragEnd(e) {
+  e.target.classList.remove('dragging');
+  document.querySelectorAll('.draw-section').forEach(s => s.classList.remove('drag-over'));
+  document.getElementById('unassigned-pool')?.classList.remove('drag-over');
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const section = e.currentTarget;
+  section.classList.add('drag-over');
+}
+
+function handleDropSection(e, sectionIdx) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  const pid = drawDraggedPlayer;
+  if (!pid) return;
+
+  const draw = getOrCreateDraw(currentDrawEventId);
+  if (!draw) return;
+
+  // Remove from all sections first
+  draw.sections.forEach(s => {
+    s.players = s.players.filter(id => id !== pid);
+  });
+
+  // Add to target section
+  draw.sections[sectionIdx].players.push(pid);
+  saveState();
+  renderDrawContent();
+  drawDraggedPlayer = null;
+}
+
+function handleDropUnassigned(e) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  const pid = drawDraggedPlayer;
+  if (!pid) return;
+
+  const draw = getOrCreateDraw(currentDrawEventId);
+  if (!draw) return;
+
+  // Remove from all sections
+  draw.sections.forEach(s => {
+    s.players = s.players.filter(id => id !== pid);
+  });
+
+  saveState();
+  renderDrawContent();
+  drawDraggedPlayer = null;
+}
+
+// ============================================================
+// MODAL UTILS
+// ============================================================
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function closeBg(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+});
+
+// ============================================================
+// INIT
+// ============================================================
+document.getElementById('header-logo').src = LOGO;
+loadState();
+renderDashboard();
+</script>
+</body>
 </html>
