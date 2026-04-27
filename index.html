@@ -145,6 +145,31 @@ td.club-col{width:150px}
 .rank-input{width:42px;text-align:center;border:1px solid var(--border);border-radius:5px;padding:4px;font-size:.78rem;font-family:"Source Sans 3",sans-serif}
 .rank-input:focus{border-color:var(--navy-mid);outline:none}
 
+/* PLAYOFF BRACKET */
+.bracket-wrap{overflow-x:auto;padding:20px 0}
+.bracket{display:flex;gap:0;align-items:stretch}
+.bracket-round{display:flex;flex-direction:column;justify-content:center;min-width:200px;position:relative}
+.bracket-round-title{text-align:center;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--navy);margin-bottom:12px;padding:0 10px}
+.bracket-match{background:var(--white);border:1px solid var(--border);border-radius:8px;margin:6px 10px;overflow:hidden;min-width:180px;transition:box-shadow .15s}
+.bracket-match:hover{box-shadow:0 2px 10px rgba(0,64,96,.12)}
+.bracket-slot{padding:8px 12px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:background .1s;font-size:.82rem;min-height:36px}
+.bracket-slot:first-child{border-bottom:1px solid var(--border)}
+.bracket-slot:hover{background:var(--cream)}
+.bracket-slot.winner{background:rgba(230,148,68,.12);font-weight:700}
+.bracket-slot.winner .slot-name{color:var(--navy)}
+.bracket-slot .slot-seed{color:var(--orange);font-weight:700;font-size:.72rem;min-width:18px}
+.bracket-slot .slot-name{flex:1;font-weight:600;color:var(--text)}
+.bracket-slot .slot-club{color:var(--text-mid);font-size:.68rem}
+.bracket-slot.empty{color:var(--text-mid);font-style:italic;cursor:default;opacity:.5}
+.bracket-connector{width:24px;display:flex;flex-direction:column;justify-content:center;position:relative;flex-shrink:0}
+.playoff-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-top:14px}
+.playoff-card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:all .15s}
+.playoff-card:hover{border-color:var(--navy-light);box-shadow:0 3px 12px rgba(0,64,96,.12);transform:translateY(-1px)}
+.playoff-card-head{background:linear-gradient(135deg,var(--navy),var(--navy-mid));padding:12px 14px}
+.playoff-card-title{color:white;font-family:"Playfair Display",serif;font-size:.92rem;font-weight:600}
+.playoff-card-sub{color:rgba(255,255,255,.6);font-size:.72rem;margin-top:2px}
+.playoff-card-body{padding:10px 14px;font-size:.8rem;color:var(--text-mid)}
+
 /* MODALS */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
 .modal-overlay.open{display:flex}
@@ -190,7 +215,7 @@ td.club-col{width:150px}
 
 @media(max-width:680px){
   .summary-stats{grid-template-columns:repeat(2,1fr)}
-  .events-grid,.dash-grid,.draw-sections-grid{grid-template-columns:1fr}
+  .events-grid,.dash-grid,.draw-sections-grid,.playoff-list{grid-template-columns:1fr}
   .players-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
   .page{padding:12px 14px}
   .form-row-2{grid-template-columns:1fr}
@@ -255,9 +280,11 @@ td.club-col{width:150px}
   <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
     <button class="btn-primary" onclick="openAddPlayers()">&#43; Add / Edit Players</button>
     <button class="btn-primary" onclick="openDrawForEvent()">&#127922; Create Draw</button>
+    <button class="btn-primary" onclick="openCreatePlayoff()">&#127942; Create Playoff</button>
     <button class="btn-secondary" onclick="openEditEvent()">&#9998; Edit Event</button>
     <button class="btn-danger" onclick="deleteCurrentEvent()">Delete Event</button>
   </div>
+  <div id="ed-playoffs" style="margin-top:18px"></div>
 </div>
 
 <!-- DRAWS -->
@@ -272,6 +299,46 @@ td.club-col{width:150px}
     </select>
   </div>
   <div id="draw-content"></div>
+</div>
+
+<!-- PLAYOFF BRACKET -->
+<div class="page" id="page-playoff">
+  <div class="event-detail-header">
+    <button class="back-btn" id="playoff-back-btn">&#8592; Back to Event</button>
+    <div class="ed-title" id="playoff-title"></div>
+    <div class="ed-meta" id="playoff-meta"></div>
+  </div>
+  <div id="playoff-bracket-container"></div>
+</div>
+
+<!-- PLAYOFF PLAYER PICKER MODAL -->
+<div class="modal-overlay" id="modal-playoff-picker" onclick="closeBg(event,'modal-playoff-picker')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-playoff-picker')">&#10005;</button>
+    <div class="modal-head">
+      <div class="modal-head-title">Select Playoff Players</div>
+      <div class="modal-head-sub" id="playoff-picker-sub"></div>
+    </div>
+    <div class="modal-scroll">
+      <div class="modal-body">
+        <div class="form-row">
+          <label class="form-label">Playoff Name</label>
+          <input class="form-input" id="playoff-name-input" placeholder="e.g. Championship Playoff">
+        </div>
+        <div class="picker-search">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="var(--text-mid)" opacity=".5"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg>
+          <input type="text" id="playoff-picker-search" placeholder="Search players..." oninput="renderPlayoffPicker()">
+        </div>
+        <div class="selected-count" id="playoff-picker-count">0 selected</div>
+        <div class="picker-list" id="playoff-picker-list"></div>
+        <p style="font-size:.74rem;color:var(--text-mid);margin-top:10px">Select players for the knockout bracket. Player count will be rounded up to the nearest power of 2 (e.g. 5-8 players = 8 bracket slots with byes).</p>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-secondary" onclick="closeModal('modal-playoff-picker')">Cancel</button>
+      <button class="btn-primary" onclick="confirmCreatePlayoff()">Create Bracket</button>
+    </div>
+  </div>
 </div>
 
 <!-- PLAYERS -->
@@ -441,7 +508,7 @@ const LOGO = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAABsCAIAAAAuQeEI
 // ============================================================
 // STATE
 // ============================================================
-let state = { players: [], events: [], draws: [] };
+let state = { players: [], events: [], draws: [], playoffs: [] };
 
 function loadState() {
   try {
@@ -449,12 +516,14 @@ function loadState() {
     if (saved) {
       state = JSON.parse(saved);
       if (!state.draws) state.draws = [];
+      if (!state.playoffs) state.playoffs = [];
       return;
     }
   } catch(e) {}
   state.players = SEED_PLAYERS.map((p, i) => ({ id: 'p' + i, name: p.name, club: p.club }));
   state.events = [];
   state.draws = [];
+  state.playoffs = [];
   saveState();
 }
 
@@ -572,6 +641,7 @@ function renderEventDetail(q) {
   if (!players.length) {
     document.getElementById('ed-entries').innerHTML =
       `<div style="padding:24px;text-align:center;color:var(--text-mid)">${lq?'No players match your search':'No players added yet — click "+ Add / Edit Players"'}</div>`;
+    renderEventPlayoffs();
     return;
   }
 
@@ -586,6 +656,9 @@ function renderEventDetail(q) {
 
   document.getElementById('ed-entries').innerHTML =
     `<table><thead><tr><th style="width:40px">#</th><th>Player</th><th>Club</th><th style="width:44px"></th></tr></thead><tbody>${rows}</tbody></table>`;
+
+  // Render playoffs for this event
+  renderEventPlayoffs();
 }
 
 function removeFromEvent(evId, pid) {
@@ -601,6 +674,7 @@ function deleteCurrentEvent() {
   if (!ev || !confirm(`Delete "${ev.name}"? This cannot be undone.`)) return;
   state.events = state.events.filter(e => e.id !== currentEventId);
   state.draws = state.draws.filter(d => d.eventId !== currentEventId);
+  state.playoffs = state.playoffs.filter(p => p.eventId !== currentEventId);
   saveState();
   showPage('events', null);
 }
@@ -1251,6 +1325,373 @@ function handleDropUnassigned(e) {
   saveState();
   renderDrawContent();
   drawDraggedPlayer = null;
+}
+
+// ============================================================
+// PLAYOFFS
+// ============================================================
+let playoffPickerSelected = new Set();
+let currentPlayoffId = null;
+
+function renderEventPlayoffs() {
+  const container = document.getElementById('ed-playoffs');
+  if (!container) return;
+  const playoffs = state.playoffs.filter(p => p.eventId === currentEventId);
+  if (!playoffs.length) { container.innerHTML = ''; return; }
+
+  container.innerHTML = `<div class="detail-section-title">Playoffs</div>
+    <div class="playoff-list">${playoffs.map(po => {
+      const totalMatches = po.bracket.length;
+      const decided = po.bracket.filter(m => m.winner).length;
+      const champion = po.bracket[po.bracket.length - 1]?.winner;
+      const champPlayer = champion ? state.players.find(p => p.id === champion) : null;
+      return `<div class="playoff-card" onclick="openPlayoffBracket('${po.id}')">
+        <div class="playoff-card-head">
+          <div class="playoff-card-title">${po.name}</div>
+          <div class="playoff-card-sub">${po.playerIds.length} players &middot; ${po.rounds} rounds</div>
+        </div>
+        <div class="playoff-card-body">
+          ${champPlayer ? `<strong style="color:var(--orange)">&#127942; Champion: ${champPlayer.name}</strong>` :
+            `${decided}/${totalMatches} matches decided`}
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+}
+
+function openCreatePlayoff() {
+  const ev = state.events.find(e => e.id === currentEventId);
+  if (!ev || !ev.entries.length) { alert('Add players to the event first.'); return; }
+  playoffPickerSelected = new Set();
+  document.getElementById('playoff-picker-sub').textContent = ev.name;
+  document.getElementById('playoff-picker-search').value = '';
+  document.getElementById('playoff-name-input').value = '';
+  renderPlayoffPicker();
+  openModal('modal-playoff-picker');
+}
+
+function renderPlayoffPicker() {
+  const ev = state.events.find(e => e.id === currentEventId);
+  if (!ev) return;
+  const q = document.getElementById('playoff-picker-search').value.toLowerCase().trim();
+  const players = ev.entries
+    .map(pid => state.players.find(p => p.id === pid))
+    .filter(Boolean)
+    .filter(p => !q || p.name.toLowerCase().includes(q) || (p.club||'').toLowerCase().includes(q))
+    .sort((a,b) => a.name.localeCompare(b.name));
+
+  document.getElementById('playoff-picker-count').textContent = `${playoffPickerSelected.size} player${playoffPickerSelected.size!==1?'s':''} selected`;
+  document.getElementById('playoff-picker-list').innerHTML = players.map(p => {
+    const sel = playoffPickerSelected.has(p.id);
+    return `<div class="picker-item ${sel?'selected':''}" onclick="togglePlayoffPicker('${p.id}')">
+      <span class="picker-check">${sel?'&#10003;':''}</span>
+      <div style="flex:1">
+        <div class="picker-name">${p.name}</div>
+        <div class="picker-club-tag">${p.club||''}</div>
+      </div>
+    </div>`;
+  }).join('') || '<div style="padding:16px;text-align:center;color:var(--text-mid)">No players found</div>';
+}
+
+function togglePlayoffPicker(id) {
+  if (playoffPickerSelected.has(id)) playoffPickerSelected.delete(id);
+  else playoffPickerSelected.add(id);
+  renderPlayoffPicker();
+}
+
+function confirmCreatePlayoff() {
+  const name = document.getElementById('playoff-name-input').value.trim() || 'Playoff';
+  if (playoffPickerSelected.size < 2) { alert('Select at least 2 players.'); return; }
+
+  const playerIds = [...playoffPickerSelected];
+  const n = playerIds.length;
+  // Round up to nearest power of 2
+  const bracketSize = Math.pow(2, Math.ceil(Math.log2(n)));
+  const rounds = Math.log2(bracketSize);
+
+  // Seed players: fill first slots, rest are byes
+  const seeded = [...playerIds];
+  while (seeded.length < bracketSize) seeded.push(null); // byes
+
+  // Build bracket: array of matches
+  // Total matches = bracketSize - 1
+  const bracket = [];
+  const totalMatches = bracketSize - 1;
+  for (let i = 0; i < totalMatches; i++) {
+    bracket.push({ p1: null, p2: null, winner: null, venue: '' });
+  }
+
+  // Fill first round matches
+  const firstRoundMatches = bracketSize / 2;
+  for (let i = 0; i < firstRoundMatches; i++) {
+    bracket[i].p1 = seeded[i * 2];
+    bracket[i].p2 = seeded[i * 2 + 1];
+    // Auto-advance byes
+    if (bracket[i].p1 && !bracket[i].p2) {
+      bracket[i].winner = bracket[i].p1;
+    } else if (!bracket[i].p1 && bracket[i].p2) {
+      bracket[i].winner = bracket[i].p2;
+    }
+  }
+
+  // Propagate byes to next round
+  propagateByes(bracket, firstRoundMatches, rounds);
+
+  const playoff = {
+    id: nextId('po'),
+    eventId: currentEventId,
+    name,
+    playerIds,
+    bracketSize,
+    rounds,
+    bracket
+  };
+
+  state.playoffs.push(playoff);
+  saveState();
+  closeModal('modal-playoff-picker');
+  openPlayoffBracket(playoff.id);
+}
+
+function propagateByes(bracket, firstRoundMatches, rounds) {
+  let offset = 0;
+  let matchesInRound = firstRoundMatches;
+  for (let r = 0; r < rounds - 1; r++) {
+    const nextOffset = offset + matchesInRound;
+    const nextMatches = matchesInRound / 2;
+    for (let i = 0; i < matchesInRound; i += 2) {
+      const m1 = bracket[offset + i];
+      const m2 = bracket[offset + i + 1];
+      const nextMatch = bracket[nextOffset + Math.floor(i / 2)];
+      if (m1.winner) nextMatch.p1 = m1.winner;
+      if (m2.winner) nextMatch.p2 = m2.winner;
+      // Auto-advance if only one player
+      if (nextMatch.p1 && !nextMatch.p2 && m2.winner !== undefined) {
+        // Only auto-advance if the other match is truly a bye (both slots resolved)
+        if (m2.p1 === null && m2.p2 === null) nextMatch.winner = nextMatch.p1;
+      }
+      if (nextMatch.p2 && !nextMatch.p1 && m1.winner !== undefined) {
+        if (m1.p1 === null && m1.p2 === null) nextMatch.winner = nextMatch.p2;
+      }
+    }
+    offset = nextOffset;
+    matchesInRound = nextMatches;
+  }
+}
+
+function openPlayoffBracket(playoffId) {
+  currentPlayoffId = playoffId;
+  const po = state.playoffs.find(p => p.id === playoffId);
+  if (!po) return;
+
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-playoff').classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+
+  const ev = state.events.find(e => e.id === po.eventId);
+  document.getElementById('playoff-title').textContent = po.name;
+  document.getElementById('playoff-meta').innerHTML = ev ?
+    `<div class="ed-meta-item">&#127941; ${ev.name}</div><div class="ed-meta-item">&#128101; ${po.playerIds.length} players</div><div class="ed-meta-item">&#127922; ${po.rounds} rounds</div>` : '';
+
+  document.getElementById('playoff-back-btn').onclick = () => {
+    if (ev) openEventDetail(po.eventId);
+    else showPage('events', null);
+  };
+
+  renderBracket(po);
+}
+
+function renderBracket(po) {
+  const container = document.getElementById('playoff-bracket-container');
+  // Get venues from the event's draw sections
+  const draw = state.draws.find(d => d.eventId === po.eventId);
+  const sectionVenues = draw ? [...new Set(draw.sections.map(s => s.venue).filter(Boolean))] : [];
+
+  const roundNames = [];
+  for (let r = 0; r < po.rounds; r++) {
+    if (r === po.rounds - 1) roundNames.push('Final');
+    else if (r === po.rounds - 2) roundNames.push('Semi-Finals');
+    else if (r === po.rounds - 3) roundNames.push('Quarter-Finals');
+    else roundNames.push(`Round ${r + 1}`);
+  }
+
+  let html = '<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">';
+  html += `<button class="btn-danger" onclick="deletePlayoff('${po.id}')">Delete Playoff</button>`;
+  html += '</div>';
+
+  html += '<div class="bracket-wrap"><div class="bracket">';
+
+  let offset = 0;
+  let matchesInRound = po.bracketSize / 2;
+
+  for (let r = 0; r < po.rounds; r++) {
+    html += `<div class="bracket-round">`;
+    html += `<div class="bracket-round-title">${roundNames[r]}</div>`;
+
+    for (let i = 0; i < matchesInRound; i++) {
+      const matchIdx = offset + i;
+      const match = po.bracket[matchIdx];
+      const p1 = match.p1 ? state.players.find(p => p.id === match.p1) : null;
+      const p2 = match.p2 ? state.players.find(p => p.id === match.p2) : null;
+      const isP1Winner = match.winner && match.winner === match.p1;
+      const isP2Winner = match.winner && match.winner === match.p2;
+
+      html += `<div class="bracket-match">`;
+
+      // Venue selector
+      html += `<div style="padding:4px 8px;background:var(--cream);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:4px">
+        <span style="font-size:.65rem;color:var(--text-mid);font-weight:600">Venue:</span>
+        <select class="form-select" style="font-size:.7rem;padding:2px 20px 2px 6px;border-radius:4px;flex:1" onchange="setMatchVenue('${po.id}',${matchIdx},this.value)">
+          <option value="">-</option>
+          ${sectionVenues.map(v => `<option value="${v}" ${match.venue===v?'selected':''}>${v}</option>`).join('')}
+        </select>
+      </div>`;
+
+      // Slot 1
+      if (p1) {
+        html += `<div class="bracket-slot${isP1Winner?' winner':''}" onclick="selectWinner('${po.id}',${matchIdx},'${match.p1}')">
+          <span class="slot-name">${p1.name}</span>
+          <span class="slot-club">${p1.club||''}</span>
+        </div>`;
+      } else {
+        html += `<div class="bracket-slot empty"><span class="slot-name">BYE</span></div>`;
+      }
+
+      // Slot 2
+      if (p2) {
+        html += `<div class="bracket-slot${isP2Winner?' winner':''}" onclick="selectWinner('${po.id}',${matchIdx},'${match.p2}')">
+          <span class="slot-name">${p2.name}</span>
+          <span class="slot-club">${p2.club||''}</span>
+        </div>`;
+      } else {
+        html += `<div class="bracket-slot empty"><span class="slot-name">${match.p1 ? 'TBD' : 'BYE'}</span></div>`;
+      }
+
+      html += `</div>`; // bracket-match
+    }
+
+    html += `</div>`; // bracket-round
+
+    // Connector between rounds
+    if (r < po.rounds - 1) {
+      html += `<div class="bracket-connector"></div>`;
+    }
+
+    offset += matchesInRound;
+    matchesInRound = matchesInRound / 2;
+  }
+
+  // Champion display
+  const finalMatch = po.bracket[po.bracket.length - 1];
+  if (finalMatch && finalMatch.winner) {
+    const champ = state.players.find(p => p.id === finalMatch.winner);
+    if (champ) {
+      html += `<div class="bracket-round" style="min-width:160px;justify-content:center;align-items:center">
+        <div class="bracket-round-title">Champion</div>
+        <div style="background:linear-gradient(135deg,var(--orange),var(--orange-light));border-radius:12px;padding:16px 20px;text-align:center">
+          <div style="font-size:1.5rem;margin-bottom:4px">&#127942;</div>
+          <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:1rem;color:var(--navy)">${champ.name}</div>
+          <div style="font-size:.75rem;color:var(--navy);opacity:.7;margin-top:2px">${champ.club||''}</div>
+        </div>
+      </div>`;
+    }
+  }
+
+  html += '</div></div>'; // bracket, bracket-wrap
+  container.innerHTML = html;
+}
+
+function selectWinner(playoffId, matchIdx, playerId) {
+  const po = state.playoffs.find(p => p.id === playoffId);
+  if (!po) return;
+  const match = po.bracket[matchIdx];
+  if (!match.p1 || !match.p2) return; // Can't pick winner if opponent is TBD/BYE
+
+  // Toggle: if already winner, unset; otherwise set
+  if (match.winner === playerId) {
+    // Undo this winner and cascade clear
+    match.winner = null;
+    cascadeClear(po, matchIdx);
+  } else {
+    match.winner = playerId;
+    // Advance winner to next round
+    advanceWinner(po, matchIdx);
+  }
+
+  saveState();
+  renderBracket(po);
+}
+
+function advanceWinner(po, matchIdx) {
+  // Determine which round this match is in
+  let offset = 0;
+  let matchesInRound = po.bracketSize / 2;
+  let round = 0;
+  while (matchIdx >= offset + matchesInRound) {
+    offset += matchesInRound;
+    matchesInRound /= 2;
+    round++;
+  }
+
+  if (round >= po.rounds - 1) return; // Final, no next round
+
+  const posInRound = matchIdx - offset;
+  const nextOffset = offset + matchesInRound;
+  const nextMatchIdx = nextOffset + Math.floor(posInRound / 2);
+  const nextMatch = po.bracket[nextMatchIdx];
+
+  if (posInRound % 2 === 0) {
+    nextMatch.p1 = po.bracket[matchIdx].winner;
+  } else {
+    nextMatch.p2 = po.bracket[matchIdx].winner;
+  }
+}
+
+function cascadeClear(po, matchIdx) {
+  // Find round info
+  let offset = 0;
+  let matchesInRound = po.bracketSize / 2;
+  let round = 0;
+  while (matchIdx >= offset + matchesInRound) {
+    offset += matchesInRound;
+    matchesInRound /= 2;
+    round++;
+  }
+
+  if (round >= po.rounds - 1) return;
+
+  const posInRound = matchIdx - offset;
+  const nextOffset = offset + matchesInRound;
+  const nextMatchIdx = nextOffset + Math.floor(posInRound / 2);
+  const nextMatch = po.bracket[nextMatchIdx];
+
+  // Clear the slot in next match
+  if (posInRound % 2 === 0) {
+    nextMatch.p1 = null;
+  } else {
+    nextMatch.p2 = null;
+  }
+
+  // If next match had a winner, clear that too and cascade
+  if (nextMatch.winner) {
+    nextMatch.winner = null;
+    cascadeClear(po, nextMatchIdx);
+  }
+}
+
+function setMatchVenue(playoffId, matchIdx, venue) {
+  const po = state.playoffs.find(p => p.id === playoffId);
+  if (!po) return;
+  po.bracket[matchIdx].venue = venue;
+  saveState();
+}
+
+function deletePlayoff(playoffId) {
+  const po = state.playoffs.find(p => p.id === playoffId);
+  if (!po || !confirm(`Delete playoff "${po.name}"?`)) return;
+  const evId = po.eventId;
+  state.playoffs = state.playoffs.filter(p => p.id !== playoffId);
+  saveState();
+  openEventDetail(evId);
 }
 
 // ============================================================
